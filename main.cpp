@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include "stdio.h"
 #include "SDL/SDL.h"
+#include "Player.h"
 
 
 #define NUM_THREADS 10
@@ -15,6 +16,7 @@ SDL_Rect player1;
 SDL_Rect player2;
 SDL_Rect ai1;
 SDL_Rect ai2;
+SDL_Rect wall;
 SDL_Renderer* renderer = NULL;
 void LoadGame() 
 {
@@ -32,11 +34,13 @@ void LoadGame()
 	player1.y = 350;
 	player1.h = 20;
 	player1.w = 20;
+	//Player player1 = Player(200, 350, 20, 20);
 
 	player2.x = 785;
 	player2.y = 350;
 	player2.h = 20;
 	player2.w = 20;
+	//Player player2 = Player(785, 350, 20, 20);
 
 	ai1.x = 200;
 	ai1.y = 100;
@@ -48,6 +52,10 @@ void LoadGame()
 	ai2.h = 20;
 	ai2.w = 20;
 	
+	wall.x = 100;
+	wall.y = 100;
+	wall.h = 250;
+	wall.w = 30;
 }
 
 void *player1Actions(void *threadid)
@@ -61,24 +69,31 @@ void *player1Actions(void *threadid)
 		SDL_PollEvent(&occur);
 		if (occur.type == SDL_QUIT) {
 			running = false;
+		} else if (keys[SDL_GetScancodeFromKey(SDLK_w)]) {
+			if(player1.y != wall.y + wall.h || player1.x > wall.x + wall.w || player1.x + player1.w < wall.x){
+				player1.y -= 1;
+				SDL_Delay(1);
+			}
+		} else if (keys[SDL_GetScancodeFromKey(SDLK_a)]) {
+			if(player1.x != wall.x + wall.w || player1.y > wall.y + wall.h || player1.y + 50 < wall.y + wall.w){
+				player1.x -= 1;
+				SDL_Delay(1);
+			}
+		} else if (keys[SDL_GetScancodeFromKey(SDLK_s)]) {
+			if (player1.y + player1.h != wall.y || player1.x > wall.x + wall.w || player1.x + player1.w < wall.x) {
+				player1.y += 1;
+				SDL_Delay(1);
+			}
+		} else if (keys[SDL_GetScancodeFromKey(SDLK_d)]) {
+			if (player1.x + player1.h != wall.x || player1.y > wall.y + wall.h || player1.y + 50 < wall.y + wall.w) {
+				player1.x += 1;
+				SDL_Delay(1);
+			}
+		} else {
+			//player1.y += 1;
+			//SDL_Delay(5);
 		}
 
-		if (keys[SDL_GetScancodeFromKey(SDLK_w)]) {
-			player1.y -= 1;
-			SDL_Delay(1);
-		}
-		if (keys[SDL_GetScancodeFromKey(SDLK_a)]) {
-			player1.x -= 1;
-			SDL_Delay(1);
-		}
-		if (keys[SDL_GetScancodeFromKey(SDLK_s)]) {
-			player1.y += 1;
-			SDL_Delay(1);
-		}
-		if (keys[SDL_GetScancodeFromKey(SDLK_d)]) {
-			player1.x += 1;
-			SDL_Delay(1);
-		}
 	}
 	pthread_exit(NULL);
 	SDL_Quit();
@@ -99,20 +114,28 @@ void *player2Actions(void *threadid)
 		}
 
 		if (keys[SDL_GetScancodeFromKey(SDLK_UP)]) {
-			player2.y -= 1;
-			SDL_Delay(1);
+			if (player2.y != wall.y + wall.h || player2.x > wall.x + wall.w || player2.x + player2.w < wall.x) {
+				player2.y -= 1;
+				SDL_Delay(1);
+			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_LEFT)]) {
-			player2.x -= 1;
-			SDL_Delay(1);
+			if (player2.x != wall.x + wall.w || player2.y > wall.y + wall.h || player2.y + 50 < wall.y + wall.w) {
+				player2.x -= 1;
+				SDL_Delay(1);
+			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_DOWN)]) {
-			player2.y += 1;
-			SDL_Delay(1);
+			if (player2.y + player1.h != wall.y || player2.x > wall.x + wall.w || player2.x + player2.w < wall.x) {
+				player2.y += 1;
+				SDL_Delay(1);
+			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_RIGHT)]) {
-			player2.x += 1;
-			SDL_Delay(1);
+			if (player2.x + player2.h != wall.x || player2.y > wall.y + wall.h || player2.y + 50 < wall.y + wall.w) {
+				player2.x += 1;
+				SDL_Delay(1);
+			}
 		}
 	}
 
@@ -184,7 +207,7 @@ void Logic()
 	
 	i = 0;
 	rc = pthread_create(&threads[i], NULL,
-		player1Actions, (void *)i);
+		player1Actions, (void*)i);
 
 	if (rc) {
 		exit(-1);
@@ -227,6 +250,9 @@ void DrawScreen()
 	SDL_RenderFillRect(renderer, &ai1);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 	SDL_RenderFillRect(renderer, &ai2);
+	SDL_RenderPresent(renderer);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 0);
+	SDL_RenderFillRect(renderer, &wall);
 	SDL_RenderPresent(renderer);
 
 	
