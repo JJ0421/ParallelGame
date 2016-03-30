@@ -250,7 +250,6 @@ void DrawScreen()
 	SDL_RenderFillRect(renderer, &ai1);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 	SDL_RenderFillRect(renderer, &ai2);
-	SDL_RenderPresent(renderer);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 0);
 	SDL_RenderFillRect(renderer, &wall);
 	SDL_RenderPresent(renderer);
