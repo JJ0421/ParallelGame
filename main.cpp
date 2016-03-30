@@ -75,7 +75,7 @@ void *player1Actions(void *threadid)
 				SDL_Delay(1);
 			}
 		} else if (keys[SDL_GetScancodeFromKey(SDLK_a)]) {
-			if(player1.x != wall.x + wall.w || player1.y > wall.y + wall.h || player1.y + 50 < wall.y + wall.w){
+			if(player1.x != wall.x + wall.w || player1.y > wall.y + wall.h || player1.y + player2.h < wall.y){
 				player1.x -= 1;
 				SDL_Delay(1);
 			}
@@ -85,7 +85,7 @@ void *player1Actions(void *threadid)
 				SDL_Delay(1);
 			}
 		} else if (keys[SDL_GetScancodeFromKey(SDLK_d)]) {
-			if (player1.x + player1.h != wall.x || player1.y > wall.y + wall.h || player1.y + 50 < wall.y + wall.w) {
+			if (player1.x + player1.h != wall.x || player1.y > wall.y + wall.h || player1.y + player2.h < wall.y) {
 				player1.x += 1;
 				SDL_Delay(1);
 			}
@@ -120,19 +120,19 @@ void *player2Actions(void *threadid)
 			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_LEFT)]) {
-			if (player2.x != wall.x + wall.w || player2.y > wall.y + wall.h || player2.y + 50 < wall.y + wall.w) {
+			if (player2.x != wall.x + wall.w || player2.y > wall.y + wall.h || player2.y + player2.h < wall.y) {
 				player2.x -= 1;
 				SDL_Delay(1);
 			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_DOWN)]) {
-			if (player2.y + player1.h != wall.y || player2.x > wall.x + wall.w || player2.x + player2.w < wall.x) {
+			if (player2.y + player2.h != wall.y || player2.x > wall.x + wall.w || player2.x + player2.w < wall.x) {
 				player2.y += 1;
 				SDL_Delay(1);
 			}
 		}
 		if (keys[SDL_GetScancodeFromKey(SDLK_RIGHT)]) {
-			if (player2.x + player2.h != wall.x || player2.y > wall.y + wall.h || player2.y + 50 < wall.y + wall.w) {
+			if (player2.x + player2.h != wall.x || player2.y > wall.y + wall.h || player2.y + player2.h < wall.y) {
 				player2.x += 1;
 				SDL_Delay(1);
 			}
