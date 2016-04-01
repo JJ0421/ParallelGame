@@ -79,7 +79,6 @@ void LoadGame()
 	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 430, 1500, 30);
 	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 400, 350, 150, 30);
 	enemy3.activateEnemy(renderTarget, "enemy.png", 300, 400, 3);
-	p1Lives.activateHealth(renderTarget, 0, 0, 150, 40);
 	p2Lives.activateHealth(renderTarget, 885, 0, 150, 40);
 
 
@@ -120,6 +119,7 @@ void *player1Actions(void *threadid)
 		player1.IntersectsWith(enemy1);
 		player1.IntersectsWith(enemy2);
 		player1.IntersectsWith(enemy3);
+		
 
 
 	}
@@ -276,6 +276,27 @@ void DrawScreen()
 
 }
 
+void checkHealth()
+{
+	if (player1.lives == 3)
+		p1Lives.activateStructure(renderTarget, "threeLives.png", 0, 0, 150, 40);
+	if (player1.lives == 2)
+		p1Lives.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
+	if (player1.lives == 1)
+		p1Lives.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
+	if (player1.lives == 0)
+		p1Lives.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
+
+	if (player2.lives == 3)
+		p2Lives.activateStructure(renderTarget, "threeLives.png", 880, 0, 150, 40);
+	if (player2.lives == 2)
+		p2Lives.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
+	if (player2.lives == 1)
+		p2Lives.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
+	if (player2.lives == 0)
+		p2Lives.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
+}
+
 
 int main(int argc, char *argv[]) {
 
@@ -310,6 +331,10 @@ int main(int argc, char *argv[]) {
 			camera.x = 0;
 		//if (camera.y < 0)
 		//	camera.y = 0;
+
+		checkHealth();
+
+
 		DrawScreen();
 	}
 
