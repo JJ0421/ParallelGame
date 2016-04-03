@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>Z:\Spring16\Distributed Systems\GameProject\Game\SDL2_image-2.0.1\include;Z:\Spring16\Distributed Systems\GameProject\Game\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
-    <LibraryPath>Z:\Spring16\Distributed Systems\GameProject\Game\SDL2_image-2.0.1\lib\x86;Z:\Spring16\Distributed Systems\GameProject\Game\SDL2-2.0.4\lib\x86;Z:\Spring16\Distributed Systems\GameProject\Game\SDL2-2.0.4\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\pthreads-w32-2-9-1-release\Pre-built.2\include;C:\Users\Mitch\Documents\git repo\ParallelGame\SDL2_image-2.0.1\include;C:\Users\Mitch\Documents\git repo\ParallelGame\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86;C:\Users\Mitch\Documents\git repo\ParallelGame\SDL2_image-2.0.1\lib\x86;C:\Users\Mitch\Documents\git repo\ParallelGame\SDL2-2.0.4\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>Z:\Spring16\Distributed Systems\GameProject\Game\SDL2_image-2.0.1\include;Z:\Spring16\Distributed Systems\GameProject\Game\SDL2-2.0.4\include;$(IncludePath)</IncludePath>

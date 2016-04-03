@@ -82,13 +82,6 @@ void Structure::Draw(SDL_Renderer *renderTarget, SDL_Rect camera)
 
 
 
-
-
-
-
-
-
-
 int Structure::GetOriginX() {
 	return positionRect.x;
 }

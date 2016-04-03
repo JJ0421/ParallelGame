@@ -11,7 +11,7 @@ Player::Player()
 }
 
 
-void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int framesX, int framesY)
+void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int framesX, int framesY,int playerNumber)
 {
 	SDL_Surface *surface = IMG_Load(filePath.c_str());
 	texture = SDL_CreateTextureFromSurface(renderTarget, surface);
@@ -34,8 +34,6 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 
 	isActive = false;
 
-	static int playerNumber = 0;
-	playerNumber++;
 	if (playerNumber == 1)
 	{
 		keys[0] = SDL_SCANCODE_W;
@@ -47,7 +45,9 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 		keys[1] = SDL_SCANCODE_LEFT;
 		keys[2] = SDL_SCANCODE_RIGHT;
 	}
-	moveSpeed = 1;
+
+	playerJump = 150;
+	grav = 1;
 }
 
 Player::~Player()
@@ -56,37 +56,82 @@ Player::~Player()
 }
 
 
+void Player::gravity()
+{
+	positionRect.y++;
+	SDL_Delay(1);
+
+}
 
 
 void Player::Update(float delta, const Uint8 *keyState)
 {
+	int speed = 1;
 	isActive = true;
-	if (keyState[keys[0]])
+	if (keyState[keys[0]] && isPressed == 0)
 	{
-		positionRect.y -= moveSpeed;
+		isPressed = 1;
+		oldPosition = positionRect.y;
 		cropRect.y = frameHeight * 3;
-		SDL_Delay(1);
+		positionRect.y -= 3;
+		peak = oldPosition - 150;
+		upState = 1;
+		
 	}
+	else {
+		upState = 0;
+	}
+	
+	if (isPressed == 1) {
+		if (positionRect.y > peak && collideUp != 1) {
+			positionRect.y -= 3;
+			collide = 0;
+		}
+		else
+			isPressed = 2;
+	}
+
+
+
+	if (positionRect.y == oldPosition && collide == 1)
+		isPressed = 0;
+	
+
+
+
 	if (keyState[keys[1]])
 	{
-		positionRect.x -= moveSpeed;
+		positionRect.x -= speed;
 		cropRect.y = frameHeight;
 		SDL_Delay(1);
+		leftState = 1;
+	}
+	else {
+		leftState = 0;
 	}
 	if (keyState[keys[2]])
 	{
-		positionRect.x += moveSpeed;
+		positionRect.x += speed;
 		cropRect.y = frameHeight * 2;
 		SDL_Delay(1);
+		rightState = 1;
+	}
+	else {
+		rightState = 0;
 	}
 	if (keyState[SDL_GetScancodeFromKey(SDLK_DOWN)]) {
-		positionRect.y += moveSpeed;
+		positionRect.y += speed;
 		cropRect.y = 0;
 		SDL_Delay(1);
 	}
+
 	else {
 		isActive = false;
+		gravity();
 	}
+
+	
+	
 	if (isActive)
 	{
 		frameCounter += delta;
@@ -102,6 +147,7 @@ void Player::Update(float delta, const Uint8 *keyState)
 	else {
 		frameCounter = 0;
 		cropRect.x = frameWidth;
+
 	}
 
 }
@@ -160,31 +206,43 @@ bool Player::IntersectsWith(Enemy &e)
 
 bool Player::IntersectsWith(SDL_Rect &wall)
 {
-	
+	pWall = wall;
 	if (positionRect.x + positionRect.w < wall.x || positionRect.x > wall.x + wall.w
 		|| positionRect.y + positionRect.h < wall.y || positionRect.y > wall.y + wall.h)
 	{		
-		
-		moveSpeed = 1;
 		return false;
 	}
 
 	if ((positionRect.x + positionRect.w) == wall.x) {
 		positionRect.x--;
+		collide = 1;
 		return true;
 	}
 	if (positionRect.x == wall.x + wall.w) {
 		positionRect.x++;
+		collide = 1;
 		return true;
 	}
-	if (positionRect.y + positionRect.h == wall.y) {
-		positionRect.y--;
-		return true;
+
+	if (isPressed == 1) {
+		if (positionRect.y < wall.y + wall.h) {
+			positionRect.y = wall.y + wall.h + 1;
+			collideUp = 1;
+			return true;
+		}
 	}
-	if (positionRect.y == wall.y + wall.h) {
-		positionRect.y++;
-		return true;
-	}
+
+
+		if (positionRect.y + positionRect.h == wall.y) {
+			positionRect.y--;
+			collide = 1;
+			collideUp = 0;
+			oldPosition = positionRect.y;
+			return true;
+		}
+	
+
+
 }
 
 int Player::GetOriginX() {
@@ -195,12 +253,7 @@ int Player::GetOriginY() {
 	return positionRect.y;
 }
 
-void Player::gravity()
-{
-	float gravity = .3f;
-	positionRect.y += gravity;
-	SDL_Delay(1);
-}
+
 
 
 

@@ -74,21 +74,6 @@ void Enemy::Draw(SDL_Renderer *renderTarget, SDL_Rect camera)
 
 }
 
-/*
-bool Enemy::IntersectsWith(Player &e)
-{
-	if (positionRect.x + positionRect.w < e.positionRect.x || positionRect.x > e.positionRect.x + e.positionRect.w
-		|| positionRect.y + positionRect.h < e.positionRect.y || positionRect.y > e.positionRect.y + e.positionRect.h)
-	{
-		SDL_SetTextureColorMod(texture, 255, 255, 255);
-		return false;
-	}
-	else {
-		SDL_SetTextureColorMod(texture, 0, 0, 255);
-		return true;
-	}
-}
-*/
 
 
 int Enemy::GetOriginX() {

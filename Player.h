@@ -23,10 +23,11 @@ private:
 public:
 	Player();
 	~Player();
-	void activatePlayer(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int framesX, int framesY);
+	void activatePlayer(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int framesX, int framesY, int playerNumber);
 
 	void Update(float delta, const Uint8 *keyState);
 	void Draw(SDL_Renderer *renderTarget, SDL_Rect camera);
+	void jump();
 	bool IntersectsWith(Enemy &e);
 	bool IntersectsWith(SDL_Rect &wall);
 	int GetOriginX();
@@ -34,7 +35,18 @@ public:
 	void gravity();
 	int damaged = 0;
 	int lives;
+	int grav;
+	int playerJump;
 	SDL_Rect positionRect;
 	SDL_Rect healthRect;
+	SDL_Rect pWall;
+	int upState = 0;
+	int leftState = 0;
+	int rightState = 0;
+	int isPressed = 0;
+	int oldPosition;
+	int peak;
+	int collide;
+	int collideUp;
 
 };
