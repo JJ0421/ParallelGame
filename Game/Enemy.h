@@ -23,7 +23,6 @@ public:
 	void activateEnemy(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int i);
 	void Update();
 	void Draw(SDL_Renderer *renderTarget, SDL_Rect camera);
-	//bool IntersectsWith(Player &p);
 	int GetOriginX();
 	int GetOriginY();
 	SDL_Rect positionRect;

@@ -38,6 +38,7 @@ SDL_Rect camera;
 SDL_Rect ai1;
 SDL_Rect ai2;
 SDL_Rect wall1;
+SDL_Rect wall2;
 SDL_Rect road;
 SDL_Rect lives;
 
@@ -51,6 +52,7 @@ Enemy enemy2;
 Enemy enemy3;
 Structure roadStructure;
 Structure wall1Structure;
+Structure wall2Structure;
 Structure p1Lives;
 Structure p2Lives;
 
@@ -69,17 +71,15 @@ void setJump();
 
 void LoadGame()
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1040, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
-	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	player1.activatePlayer(renderTarget, "player1.png", 0, 400, 3, 4);
-	player2.activatePlayer(renderTarget, "player2.png", 600, 400, 3, 4);
+
+	player1.activatePlayer(renderTarget, "player1.png", 0, 300, 3, 4, 1);
+	player2.activatePlayer(renderTarget, "player2.png", 600, 300, 3, 4, 2);
 	enemy1.activateEnemy(renderTarget, "enemy.png", 100, 100, 1);
 	enemy2.activateEnemy(renderTarget, "enemy.png", 1200, 100, 2);
 	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 430, 1500, 30);
 	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 400, 350, 150, 30);
+	wall2 = wall2Structure.activateStructure(renderTarget, "wall.png", 700, 230, 30, 200);
 	enemy3.activateEnemy(renderTarget, "enemy.png", 300, 400, 3);
-	p1Lives.activateHealth(renderTarget, 0, 0, 150, 40);
 	p2Lives.activateHealth(renderTarget, 885, 0, 150, 40);
 
 
@@ -114,12 +114,14 @@ void *player1Actions(void *threadid)
 		prevTime = currentTime;
 		currentTime = SDL_GetTicks();
 		deltaTime = (currentTime - prevTime) / 1000.0f;
-		player1.Update(deltaTime, keys);
 		player1.IntersectsWith(road);
 		player1.IntersectsWith(wall1);
+		player1.IntersectsWith(wall2);
 		player1.IntersectsWith(enemy1);
 		player1.IntersectsWith(enemy2);
 		player1.IntersectsWith(enemy3);
+		player1.Update(deltaTime, keys);
+		
 
 
 	}
@@ -145,12 +147,13 @@ void *player2Actions(void *threadid)
 		prevTime = currentTime;
 		currentTime = SDL_GetTicks();
 		deltaTime = (currentTime - prevTime) / 1000.0f;
-		player2.Update(deltaTime, keys);
 		player2.IntersectsWith(road);
 		player2.IntersectsWith(wall1);
+		player2.IntersectsWith(wall2);
 		player2.IntersectsWith(enemy1);
 		player2.IntersectsWith(enemy2);
 		player2.IntersectsWith(enemy3);
+		player2.Update(deltaTime, keys);
 
 	}
 
@@ -268,6 +271,7 @@ void DrawScreen()
 	enemy2.Draw(renderTarget, camera);
 	roadStructure.Draw(renderTarget, camera);
 	wall1Structure.Draw(renderTarget, camera);
+	wall2Structure.Draw(renderTarget, camera);
 	enemy3.Draw(renderTarget, camera);
 	p1Lives.DrawStill(renderTarget);
 	p2Lives.DrawStill(renderTarget);
@@ -276,9 +280,30 @@ void DrawScreen()
 
 }
 
+void checkHealth()
+{
+	if (player1.lives == 3)
+		p1Lives.activateStructure(renderTarget, "threeLives.png", 0, 0, 150, 40);
+	if (player1.lives == 2)
+		p1Lives.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
+	if (player1.lives == 1)
+		p1Lives.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
+	if (player1.lives == 0)
+		p1Lives.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
 
-int main(int argc, char *argv[]) {
+	if (player2.lives == 3)
+		p2Lives.activateStructure(renderTarget, "threeLives.png", 880, 0, 150, 40);
+	if (player2.lives == 2)
+		p2Lives.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
+	if (player2.lives == 1)
+		p2Lives.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
+	if (player2.lives == 0)
+		p2Lives.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
+}
 
+
+void go()
+{
 	int currentTime = 0;
 	int prevTime = 0;
 	float delta = 0.0f;
@@ -288,7 +313,7 @@ int main(int argc, char *argv[]) {
 	LoadGame();
 	Logic();
 
-	
+
 
 
 	bool running = true;
@@ -297,7 +322,7 @@ int main(int argc, char *argv[]) {
 	while (running) {
 		prevTime = currentTime;
 		currentTime = SDL_GetTicks();
-		delta= (currentTime - prevTime) / 1000.0f;
+		delta = (currentTime - prevTime) / 1000.0f;
 		while (SDL_PollEvent(&ev) != 0)
 		{
 			if (ev.type == SDL_QUIT)
@@ -310,6 +335,7 @@ int main(int argc, char *argv[]) {
 			camera.x = 0;
 		//if (camera.y < 0)
 		//	camera.y = 0;
+		checkHealth();
 		DrawScreen();
 	}
 
@@ -322,6 +348,36 @@ int main(int argc, char *argv[]) {
 	renderTarget = nullptr;
 	IMG_Quit();
 	SDL_Quit();
+}
+
+bool mainMenu()
+{
+	bool play = false;
+	SDL_Event ev;
+		while (!play)
+		{
+			while (SDL_PollEvent(&ev) != 0) {
+				p1Lives.activateStructure(renderTarget, "start1.png", 410, 100, 200,100);
+				SDL_SetRenderDrawColor(renderTarget, 0, 0, 0, 0);
+				SDL_RenderClear(renderTarget);
+				p1Lives.DrawStill(renderTarget);
+				SDL_RenderPresent(renderTarget);
+					if (ev.type == SDL_MOUSEBUTTONUP) {
+						play = true;
+					}
+				}
+				
+			}
+		
+	
+	return play;
+}
+
+int main(int argc, char *argv[]) {
+	SDL_Init(SDL_INIT_EVERYTHING);
+	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1040, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	   go();
 	return 0;
 
 }

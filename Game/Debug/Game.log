@@ -1,9 +1,10 @@
-﻿Build started 3/31/2016 10:36:56 PM.
+﻿Build started 4/3/2016 1:58:58 PM.
      1>Project "Z:\Spring16\Distributed Systems\GameProject\Game\Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /DHAVE_STRUCT_TIMESPEC main.cpp
-         main.cpp
-     1>z:\spring16\distributed systems\gameproject\game\main.cpp(285): warning C4101: 'keyState': unreferenced local variable
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /DHAVE_STRUCT_TIMESPEC Player.cpp
+         Player.cpp
+     1>z:\spring16\distributed systems\gameproject\game\player.cpp(205): warning C4715: 'Player::IntersectsWith': not all control paths return a value
+     1>z:\spring16\distributed systems\gameproject\game\player.cpp(246): warning C4715: 'Player::IntersectsWith': not all control paths return a value
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Z:\Spring16\Distributed Systems\GameProject\Game\Debug\Game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib pthreadVC2.lib SDL2.lib SDL2main.lib SDL2_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"Z:\Spring16\Distributed Systems\GameProject\Game\Debug\Game.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Z:\Spring16\Distributed Systems\GameProject\Game\Debug\Game.lib" /MACHINE:X86 Debug\Enemy.obj
          Debug\main.obj
