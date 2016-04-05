@@ -22,7 +22,9 @@ void Level1::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	renderTarget = renderer;
 	camera = cameraRect;
 	dude1.activatePlayer(renderTarget, "player1.png", 50, 300, 3, 4, 1);
+	p1Health = dude1.lives;
 	dude2.activatePlayer(renderTarget, "player2.png", 0, 300, 3, 4, 2);
+	p2Health = dude2.lives;
 	pin = pinStructure.activateStructure(renderTarget, "", 0, 0, 1, 5000);
 	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 450, 1500, 30);
 	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 400, 350, 250, 30);
@@ -62,26 +64,22 @@ void Level1::DrawP2()
 }
 
 
-void Level1::go(int p) 
+void Level1::go(int p)
 {
 
 	if (p == 1) {
 		dude1.IntersectsWith(road);
 		dude1.IntersectsWith(wall1);
 		dude1.IntersectsWith(wall2);
-		dude1.IntersectsWith(door);
 		dude1.IntersectsWith(pin);
 		dude1.Update(keys);
-		p1Health = dude1.lives;
 	}
 	else {
 		dude2.IntersectsWith(road);
 		dude2.IntersectsWith(wall1);
 		dude2.IntersectsWith(wall2);
-		dude2.IntersectsWith(door);
-		dude2.Update(keys);
 		dude2.IntersectsWith(pin);
-		p2Health = dude2.lives;
+		dude2.Update(keys);
 	}
 
 	if (dude1.IntersectsWith(key)) {
@@ -90,7 +88,7 @@ void Level1::go(int p)
 	}
 	if (hasKey) {
 		key.x = -100;
-		if (dude1.IntersectsWith(door)) {
+		if (dude1.Passes(door) && dude2.Passes(door)) {
 			lvl = 2;
 		}
 	}
@@ -98,12 +96,6 @@ void Level1::go(int p)
 	if (dude2.IntersectsWith(key)) {
 		hasKey = true;
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
-	}
-	if (hasKey) {
-		key.x = -100;
-		if (dude2.IntersectsWith(door)) {
-			lvl = 2;
-		}
 	}
 
 }

@@ -16,7 +16,6 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 	SDL_Surface *surface = IMG_Load(filePath.c_str());
 	texture = SDL_CreateTextureFromSurface(renderTarget, surface);
 	SDL_FreeSurface(surface);
-	lives = 3;
 
 	SDL_QueryTexture(texture, NULL, NULL, &cropRect.w, &cropRect.h);
 	positionRect.x = x;
@@ -39,11 +38,15 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 		keys[0] = SDL_SCANCODE_W;
 		keys[1] = SDL_SCANCODE_A;
 		keys[2] = SDL_SCANCODE_D;
+		keys[3] = SDL_SCANCODE_S;
+		lives = p1Health;
 	}
 	else {
 		keys[0] = SDL_SCANCODE_UP;
 		keys[1] = SDL_SCANCODE_LEFT;
 		keys[2] = SDL_SCANCODE_RIGHT;
+		keys[3] = SDL_SCANCODE_DOWN;
+		lives = p2Health;
 	}
 
 	playerJump = 150;
@@ -114,7 +117,7 @@ void Player::Update(const Uint8 *keyState)
 		SDL_Delay(1);
 	}
 
-	if (keyState[SDL_GetScancodeFromKey(SDLK_DOWN)]) {
+	if (keyState[keys[3]]) {
 		positionRect.y += speed;
 		cropRect.y = 0;
 		SDL_Delay(1);
@@ -236,6 +239,18 @@ bool Player::IntersectsWith(SDL_Rect &wall)
 		}
 }
 
+bool Player::Passes(SDL_Rect &wall)
+{
+	if (positionRect.x + positionRect.w < wall.x || positionRect.x > wall.x + wall.w
+		|| positionRect.y + positionRect.h < wall.y || positionRect.y > wall.y + wall.h)
+	{
+		return false;
+	}
+	else {
+		return true;
+	}
+
+}
 
 
 int Player::GetOriginX() {

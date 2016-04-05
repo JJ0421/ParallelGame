@@ -51,10 +51,6 @@ void Structure::activateHealth(SDL_Renderer *renderTarget, int x, int y, int w, 
 	positionRect.h = h;
 	frameWidth = positionRect.w;
 	frameHeight = positionRect.h;
-
-
-
-
 }
 
 
@@ -66,9 +62,6 @@ void Structure::DrawStill(SDL_Renderer *renderTarget)
 
 
 }
-
-
-
 
 
 

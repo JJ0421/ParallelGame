@@ -22,7 +22,9 @@ void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	renderTarget = renderer;
 	camera = cameraRect;
 	dude1.activatePlayer(renderTarget, "player1.png", 50, 300, 3, 4, 1);
+	p1Health = dude1.lives;
 	dude2.activatePlayer(renderTarget, "player2.png", 0, 300, 3, 4, 2);
+	p2Health = dude2.lives;
 	pin = pinStructure.activateStructure(renderTarget, "", 0, 0, 1, 5000);
 	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 450, 1500, 30);
 	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 200, 250, 250, 30);
@@ -32,8 +34,9 @@ void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	door = doorStructure.activateStructure(renderTarget, "door.png", 250, 170, 40, 80);
 	key = keyStructure.activateStructure(renderTarget, "key.png", 1200, 400, 30, 30);
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
-	gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
-	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 400, 40, 50);
+	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 405, 40, 50);
+	//p1Health = dude1.lives;
+	//p2Health = dude2.lives;
 }
 
 void Level2::Draw()
@@ -57,9 +60,12 @@ void Level2::Draw()
 	}
 	if (!hasPressedButton) {
 		buttonStructure.Draw(renderTarget, camera);
+		gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 352, 100, 100);
 		gateStructure.Draw(renderTarget, camera);
+
 	}
 	else {
+		buttonStructure.Draw(renderTarget, camera);
 		gate = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 260, 100, 100);
 		gateStructure2.Draw(renderTarget, camera);
 	}
@@ -85,11 +91,9 @@ void Level2::go(int p)
 		dude1.IntersectsWith(wall2);
 		dude1.IntersectsWith(wall3);
 		dude1.IntersectsWith(wall4);
-		dude1.IntersectsWith(door);
 		dude1.IntersectsWith(pin);
 		dude1.IntersectsWith(gate);
 		dude1.Update(keys);
-		p1Health = dude1.lives;
 	}
 	else {
 		dude2.IntersectsWith(road);
@@ -97,27 +101,23 @@ void Level2::go(int p)
 		dude2.IntersectsWith(wall2);
 		dude1.IntersectsWith(wall3);
 		dude1.IntersectsWith(wall4);
-		dude2.IntersectsWith(door);
-		dude2.Update(keys);
 		dude2.IntersectsWith(pin);
 		dude2.IntersectsWith(gate);
-		p2Health = dude2.lives;
+		dude2.Update(keys);
+
 	}
 
-	if (dude1.IntersectsWith(button)) {
+	if (dude1.Passes(button) || dude2.Passes(button)) {
 		hasPressedButton = true;
-		button.x = -200;
+	}
+	else {
+		hasPressedButton = false;
 	}
 
 	if (dude1.IntersectsWith(key)) {
 		hasKey = true;
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
-	}
-	if (hasKey) {
-		key.x = -100;
-		if (dude1.IntersectsWith(door)) {
-			dude1.positionRect.y = 0;
-		}
+		
 	}
 
 	if (dude2.IntersectsWith(key)) {
@@ -125,16 +125,15 @@ void Level2::go(int p)
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
 	}
 
-	if (dude2.IntersectsWith(button)) {
-		hasPressedButton = true;
-		button.x = -200; 
-	}
-
 	if (hasKey) {
 		key.x = -100;
-		if (dude2.IntersectsWith(door)) {
-			dude2.positionRect.y = 0;
+		if (dude1.Passes(door) && dude2.Passes(door)) {
+			dude1.positionRect.y = 0;
 		}
 	}
+
+
+
+
 
 }

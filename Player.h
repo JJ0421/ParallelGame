@@ -7,6 +7,9 @@
 #include "Enemy.h"
 #include "Structure.h"
 
+
+extern int p1Health;
+extern int p2Health;
 class Player
 {
 private:
@@ -29,6 +32,7 @@ public:
 	void Draw(SDL_Renderer *renderTarget, SDL_Rect camera);
 	bool IntersectsWith(Enemy &e);
 	bool IntersectsWith(SDL_Rect &wall);
+	bool Passes(SDL_Rect &wall);
 	int GetOriginX();
 	int GetOriginY();
 	void gravity();

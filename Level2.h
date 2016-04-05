@@ -30,6 +30,7 @@ private:
 	SDL_Rect key;
 	SDL_Rect door;
 	SDL_Rect button;
+	SDL_Rect oldButton;
 
 	Structure pinStructure;
 	Structure roadStructure;

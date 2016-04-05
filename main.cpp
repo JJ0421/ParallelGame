@@ -7,7 +7,7 @@
 #include "Enemy.h"
 #include "Structure.h"
 #include "Level1.h"
-#include "Level2.h";
+#include "Level2.h"
 
 
 #define NUM_THREADS 10
@@ -41,6 +41,7 @@ Enemy enemy3;
 
 Structure p1Lives;
 Structure p2Lives;
+Structure startStructure;
 
 Level1 lv1;
 Level2 lv2;
@@ -59,7 +60,7 @@ SDL_Texture *LoadTexture(std::string filePath, SDL_Renderer *renderTarget)
 
 void LoadGame()
 {
-	texture = LoadTexture("sky.jpg", renderTarget);
+	texture = LoadTexture("background.png", renderTarget);
 	camera.x = 0;
 	camera.y = 0;
 	camera.w = 640;
@@ -249,6 +250,7 @@ void checkHealth()
 
 void go()
 {
+	const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
 	LoadGame();
 	Logic();
@@ -269,6 +271,8 @@ void go()
 		
 		checkHealth();
 		DrawScreen();
+		if (keyState[SDL_SCANCODE_ESCAPE])
+			running = false;
 	}
 
 	SDL_DestroyWindow(window);
@@ -286,22 +290,44 @@ bool mainMenu()
 {
 	bool play = false;
 	SDL_Event ev;
-	while (!play)
+	startStructure.activateStructure(renderTarget, "start1.png", 410, 100, 200, 100);
+	while (play == false)
 	{
 		while (SDL_PollEvent(&ev) != 0) {
-			p1Lives.activateStructure(renderTarget, "start1.png", 410, 100, 200, 100);
+
 			SDL_SetRenderDrawColor(renderTarget, 0, 0, 0, 0);
 			SDL_RenderClear(renderTarget);
-			p1Lives.DrawStill(renderTarget);
+			startStructure.DrawStill(renderTarget);
 			SDL_RenderPresent(renderTarget);
-			if (ev.type == SDL_MOUSEBUTTONUP) {
-				play = true;
+
+			if (ev.type) {
+				SDL_SetTextureColorMod(startStructure.texture, 255, 255, 255);
+				if (ev.type == SDL_QUIT) {
+					SDL_DestroyWindow(window);
+					SDL_DestroyTexture(texture);
+					SDL_DestroyRenderer(renderTarget);
+
+					texture = nullptr;
+					window = nullptr;
+					renderTarget = nullptr;
+					IMG_Quit();
+					SDL_Quit();
+					return false;
+				}
+
+				if (ev.type == SDL_MOUSEMOTION) {
+					if (ev.button.x >= 410 && ev.button.x <= 610 && ev.button.y >= 100 && ev.button.y <= 200) {
+						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);						
+					}	
+				}
+				if (ev.button.x >= 410 && ev.button.x <= 610 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONUP) {
+					SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
+					play = true;
+				}
 			}
 		}
 
 	}
-
-
 	return play;
 }
 
@@ -309,8 +335,9 @@ int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1040, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	go();
-
+	if (mainMenu() == true) {
+		go();
+	}
 
 
 	return 0;
