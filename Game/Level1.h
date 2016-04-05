@@ -11,6 +11,7 @@
 
 extern int p1Health;
 extern int p2Health;
+extern int lvl;
 class Level1 {
 private:
 	SDL_Rect camera;

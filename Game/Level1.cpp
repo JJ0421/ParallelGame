@@ -87,7 +87,7 @@ void Level1::go(int p)
 	if (hasKey) {
 		key.x = -100;
 		if (dude1.IntersectsWith(gate)) {
-			dude1.positionRect.y = 0;
+			lvl = 2;
 		}
 	}
 
@@ -98,7 +98,7 @@ void Level1::go(int p)
 	if (hasKey) {
 		key.x = -100;
 		if (dude2.IntersectsWith(gate)) {
-			dude2.positionRect.y = 0;
+			lvl = 2;
 		}
 	}
 

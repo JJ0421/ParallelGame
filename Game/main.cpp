@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "Structure.h"
 #include "Level1.h"
+#include "Level2.h";
 
 
 #define NUM_THREADS 10
@@ -30,7 +31,7 @@ SDL_Rect lives;
 
 int p1Health = 3;
 int p2Health = 3;
-
+int lvl = 1;
 
 Player player1;
 Player player2;
@@ -42,6 +43,7 @@ Structure p1Lives;
 Structure p2Lives;
 
 Level1 lv1;
+Level2 lv2;
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -77,7 +79,10 @@ void *player1Actions(void *threadid)
 		if (occur.type == SDL_QUIT) {
 			running = false;
 		}
-		lv1.go(1);
+		if(lvl == 1)
+			lv1.go(1);
+		if (lvl == 2)
+			lv2.go(1);
 
 	}
 
@@ -98,7 +103,10 @@ void *player2Actions(void *threadid)
 		if (occur.type == SDL_QUIT) {
 			running = false;
 		}
-		lv1.go(2);
+		if (lvl == 1)
+			lv1.go(2);
+		if (lvl == 2)
+			lv2.go(2);
 	}
 
 	pthread_exit(NULL);
@@ -201,9 +209,16 @@ void DrawScreen()
 	SDL_RenderCopy(renderTarget, texture, &camera, NULL);
 	p1Lives.DrawStill(renderTarget);
 	p2Lives.DrawStill(renderTarget);
-	lv1.Draw();
-	lv1.DrawP1();
-	lv1.DrawP2();
+	if (lvl == 1) {
+		lv1.Draw();
+		lv1.DrawP1();
+		lv1.DrawP2();
+	}
+	if (lvl == 2) {
+		lv2.Draw();
+		lv2.DrawP1();
+		lv2.DrawP2();
+	}
 	SDL_RenderPresent(renderTarget);
 
 
@@ -239,7 +254,7 @@ void go()
 	Logic();
 	
 	lv1.activateLevel(renderTarget, camera);
-
+	lv2.activateLevel(renderTarget, camera);
 	bool running = true;
 	SDL_Event ev;
 

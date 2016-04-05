@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="Level2.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Structure.cpp" />
@@ -140,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Level1.h" />
+    <ClInclude Include="Level2.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Structure.h" />
   </ItemGroup>
