@@ -1,9 +1,0 @@
-﻿  Structure.cpp
-  Player.cpp
-  main.cpp
-c:\users\mitch\documents\new folder (2)\main.cpp(342): warning C4101: 'keyState': unreferenced local variable
-  Enemy.cpp
-  Generating Code...
-c:\users\mitch\documents\new folder (2)\player.cpp(205): warning C4715: 'Player::IntersectsWith': not all control paths return a value
-c:\users\mitch\documents\new folder (2)\player.cpp(246): warning C4715: 'Player::IntersectsWith': not all control paths return a value
-  Game.vcxproj -> C:\Users\Mitch\Documents\New folder (2)\Debug\Game.exe

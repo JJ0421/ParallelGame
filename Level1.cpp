@@ -6,37 +6,33 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Structure.h"
-#include "Level2.h"
+#include "Level1.h"
 
-Level2::Level2()
+Level1::Level1()
 {
 
 }
 
-Level2::~Level2()
+Level1::~Level1()
 {
 
 }
 
-void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
+void Level1::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	renderTarget = renderer;
 	camera = cameraRect;
 	dude1.activatePlayer(renderTarget, "player1.png", 50, 300, 3, 4, 1);
 	dude2.activatePlayer(renderTarget, "player2.png", 0, 300, 3, 4, 2);
 	pin = pinStructure.activateStructure(renderTarget, "", 0, 0, 1, 5000);
 	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 450, 1500, 30);
-	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 200, 250, 250, 30);
-	wall2 = wall2Structure.activateStructure(renderTarget, "wall.png", 550, 350, 250, 30);
-	wall3 = wall3Structure.activateStructure(renderTarget, "wall.png", 1070, 330, 250, 30);
-	wall4 = wall4Structure.activateStructure(renderTarget, "wall.png", 1320, 330, 30, 120);
-	door = doorStructure.activateStructure(renderTarget, "door.png", 250, 170, 40, 80);
-	key = keyStructure.activateStructure(renderTarget, "key.png", 1200, 400, 30, 30);
+	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 400, 350, 250, 30);
+	wall2 = wall2Structure.activateStructure(renderTarget, "wall.png", 750, 300, 250, 30);
+	door = doorStructure.activateStructure(renderTarget, "door.png", 870, 223, 40, 80);
+	key = keyStructure.activateStructure(renderTarget, "key.png", 500, 300, 30, 30);
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
-	gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
-	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 400, 40, 50);
 }
 
-void Level2::Draw()
+void Level1::Draw()
 {
 	camera.x = dude1.GetOriginX() - 320;
 
@@ -45,8 +41,6 @@ void Level2::Draw()
 	roadStructure.Draw(renderTarget, camera);
 	wall1Structure.Draw(renderTarget, camera);
 	wall2Structure.Draw(renderTarget, camera);
-	wall3Structure.Draw(renderTarget, camera);
-	wall4Structure.Draw(renderTarget, camera);
 	doorStructure.Draw(renderTarget, camera);
 	if (!hasKey) {
 		keyStructure.Draw(renderTarget, camera);
@@ -55,39 +49,28 @@ void Level2::Draw()
 	else {
 		KeyOrNo.DrawStill(renderTarget);
 	}
-	if (!hasPressedButton) {
-		buttonStructure.Draw(renderTarget, camera);
-		gateStructure.Draw(renderTarget, camera);
-	}
-	else {
-		gate = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 260, 100, 100);
-		gateStructure2.Draw(renderTarget, camera);
-	}
 }
 
-void Level2::DrawP1()
+void Level1::DrawP1()
 {
 	dude1.Draw(renderTarget, camera);
 }
 
-void Level2::DrawP2()
+void Level1::DrawP2()
 {
 	dude2.Draw(renderTarget, camera);
 }
 
 
-void Level2::go(int p)
+void Level1::go(int p) 
 {
 
 	if (p == 1) {
 		dude1.IntersectsWith(road);
 		dude1.IntersectsWith(wall1);
 		dude1.IntersectsWith(wall2);
-		dude1.IntersectsWith(wall3);
-		dude1.IntersectsWith(wall4);
 		dude1.IntersectsWith(door);
 		dude1.IntersectsWith(pin);
-		dude1.IntersectsWith(gate);
 		dude1.Update(keys);
 		p1Health = dude1.lives;
 	}
@@ -95,18 +78,10 @@ void Level2::go(int p)
 		dude2.IntersectsWith(road);
 		dude2.IntersectsWith(wall1);
 		dude2.IntersectsWith(wall2);
-		dude1.IntersectsWith(wall3);
-		dude1.IntersectsWith(wall4);
 		dude2.IntersectsWith(door);
 		dude2.Update(keys);
 		dude2.IntersectsWith(pin);
-		dude2.IntersectsWith(gate);
 		p2Health = dude2.lives;
-	}
-
-	if (dude1.IntersectsWith(button)) {
-		hasPressedButton = true;
-		button.x = -200;
 	}
 
 	if (dude1.IntersectsWith(key)) {
@@ -116,7 +91,7 @@ void Level2::go(int p)
 	if (hasKey) {
 		key.x = -100;
 		if (dude1.IntersectsWith(door)) {
-			dude1.positionRect.y = 0;
+			lvl = 2;
 		}
 	}
 
@@ -124,16 +99,10 @@ void Level2::go(int p)
 		hasKey = true;
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
 	}
-
-	if (dude2.IntersectsWith(button)) {
-		hasPressedButton = true;
-		button.x = -200; 
-	}
-
 	if (hasKey) {
 		key.x = -100;
 		if (dude2.IntersectsWith(door)) {
-			dude2.positionRect.y = 0;
+			lvl = 2;
 		}
 	}
 

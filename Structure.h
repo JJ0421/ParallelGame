@@ -10,7 +10,6 @@ class Structure
 {
 private:
 	SDL_Rect cropRect;
-	SDL_Texture *texture;
 	float frameCounter;
 	int frameWidth, frameHeight;
 	int textureWidth;
@@ -18,6 +17,7 @@ private:
 public:
 	Structure();
 	~Structure();
+	SDL_Texture *texture;
 	SDL_Rect activateStructure(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int w, int h);
 	void activateHealth(SDL_Renderer *renderTarget, int x, int y, int w, int h);
 	void DrawStill(SDL_Renderer *renderTarget);

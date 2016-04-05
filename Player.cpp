@@ -58,22 +58,22 @@ Player::~Player()
 
 void Player::gravity()
 {
-	positionRect.y++;
+	positionRect.y += 1;
 	SDL_Delay(1);
 
 }
 
 
-void Player::Update(float delta, const Uint8 *keyState)
+void Player::Update(const Uint8 *keyState)
 {
 	int speed = 1;
 	isActive = true;
-	if (keyState[keys[0]] && isPressed == 0)
+	if (keyState[keys[0]] && isPressed == 0 && collide == 1)
 	{
 		isPressed = 1;
 		oldPosition = positionRect.y;
 		cropRect.y = frameHeight * 3;
-		positionRect.y -= 3;
+		positionRect.y -= 5;
 		peak = oldPosition - 150;
 		upState = 1;
 		
@@ -84,7 +84,7 @@ void Player::Update(float delta, const Uint8 *keyState)
 	
 	if (isPressed == 1) {
 		if (positionRect.y > peak && collideUp != 1) {
-			positionRect.y -= 3;
+			positionRect.y -= 4;
 			collide = 0;
 		}
 		else
@@ -104,21 +104,16 @@ void Player::Update(float delta, const Uint8 *keyState)
 		positionRect.x -= speed;
 		cropRect.y = frameHeight;
 		SDL_Delay(1);
-		leftState = 1;
 	}
 	else {
-		leftState = 0;
 	}
 	if (keyState[keys[2]])
 	{
 		positionRect.x += speed;
 		cropRect.y = frameHeight * 2;
 		SDL_Delay(1);
-		rightState = 1;
 	}
-	else {
-		rightState = 0;
-	}
+
 	if (keyState[SDL_GetScancodeFromKey(SDLK_DOWN)]) {
 		positionRect.y += speed;
 		cropRect.y = 0;
@@ -128,13 +123,14 @@ void Player::Update(float delta, const Uint8 *keyState)
 	else {
 		isActive = false;
 		gravity();
+		collide = 0;
 	}
 
 	
 	
 	if (isActive)
 	{
-		frameCounter += delta;
+
 	
 		if (frameCounter >= 0.25f)
 		{
@@ -206,7 +202,7 @@ bool Player::IntersectsWith(Enemy &e)
 
 bool Player::IntersectsWith(SDL_Rect &wall)
 {
-	pWall = wall;
+
 	if (positionRect.x + positionRect.w < wall.x || positionRect.x > wall.x + wall.w
 		|| positionRect.y + positionRect.h < wall.y || positionRect.y > wall.y + wall.h)
 	{		
@@ -215,12 +211,10 @@ bool Player::IntersectsWith(SDL_Rect &wall)
 
 	if ((positionRect.x + positionRect.w) == wall.x) {
 		positionRect.x--;
-		collide = 1;
 		return true;
 	}
 	if (positionRect.x == wall.x + wall.w) {
 		positionRect.x++;
-		collide = 1;
 		return true;
 	}
 
@@ -240,10 +234,9 @@ bool Player::IntersectsWith(SDL_Rect &wall)
 			oldPosition = positionRect.y;
 			return true;
 		}
-	
-
-
 }
+
+
 
 int Player::GetOriginX() {
 	return positionRect.x;
