@@ -27,6 +27,7 @@ private:
 	SDL_Rect wall3;
 	SDL_Rect wall4;
 	SDL_Rect gate;
+	SDL_Rect gateUp;
 	SDL_Rect key;
 	SDL_Rect door;
 	SDL_Rect button;

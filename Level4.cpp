@@ -39,6 +39,10 @@ void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
 	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 505, 40, 50);
 	button2 = buttonStructure2.activateStructure(renderTarget, "button.png", 1200, 505, 40, 50);
+	gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 451, 100, 100);
+	gateUp = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
+	gate2 = gate2Structure.activateStructure(renderTarget, "gate.png", 1475, 451, 100, 100);
+	gate2Up = gate2Structure2.activateStructure(renderTarget, "gate.png", 1475, 360, 100, 100);
 	makeEnemies();
 }
 
@@ -65,24 +69,27 @@ void Level4::Draw()
 		KeyOrNo.DrawStill(renderTarget);
 	}
 	if (!hasPressedButton) {
-		gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 451, 100, 100);
 		gateStructure.Draw(renderTarget, camera);
+		gateUp.y = 451;
+		gate.y = 451;
 
 	}
 	else {
-
-		gate = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 		gateStructure2.Draw(renderTarget, camera);
+		gateUp.y = 360;
+		gate.y = 360;
 	}
 
 	if (!hasPressedButton2) {
-		gate2 = gate2Structure.activateStructure(renderTarget, "gate.png", 1475, 451, 100, 100);
+		gate2Up.y = 451;
+		gate2.y = 451;
 		gate2Structure.Draw(renderTarget, camera);
 
 	}
 	else {
-		gate2 = gate2Structure2.activateStructure(renderTarget, "gate.png", 1475, 360, 100, 100);
 		gate2Structure2.Draw(renderTarget, camera);
+		gate2Up.y = 360;
+		gate2.y = 360;
 	}
 }
 
@@ -167,7 +174,9 @@ void Level4::go(int p)
 		dude1.IntersectsWith(wall4);
 		dude1.IntersectsWith(pin);
 		dude1.IntersectsWith(gate);
+		dude1.IntersectsWith(gateUp);
 		dude1.IntersectsWith(gate2);
+		dude1.IntersectsWith(gate2Up);
 		dude1.IntersectsWith(wall5);
 		dude1.Update(keys);
 	}
@@ -179,7 +188,9 @@ void Level4::go(int p)
 		dude2.IntersectsWith(wall4);
 		dude2.IntersectsWith(pin);
 		dude2.IntersectsWith(gate);
+		dude2.IntersectsWith(gateUp);
 		dude2.IntersectsWith(gate2);
+		dude2.IntersectsWith(gate2Up);
 		dude2.IntersectsWith(wall5);
 		dude2.Update(keys);
 

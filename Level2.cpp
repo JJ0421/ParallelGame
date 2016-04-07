@@ -37,6 +37,8 @@ void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	key = keyStructure.activateStructure(renderTarget, "key.png", 1200, 500, 30, 30);
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
 	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 505, 40, 50);
+	gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 451, 100, 100);
+	gateUp = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 }
 
 void Level2::Draw()
@@ -60,13 +62,15 @@ void Level2::Draw()
 		KeyOrNo.DrawStill(renderTarget);
 	}
 	if (!hasPressedButton) {
-		gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 451, 100, 100);
 		gateStructure.Draw(renderTarget, camera);
+		gate.y = 451;
+		gateUp.y = 451;
 
 	}
 	else {
-		gate = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 		gateStructure2.Draw(renderTarget, camera);
+		gate.y = 360;
+		gateUp.y = 360;
 	}
 }
 
@@ -92,6 +96,7 @@ void Level2::go(int p)
 		dude1.IntersectsWith(wall4);
 		dude1.IntersectsWith(pin);
 		dude1.IntersectsWith(gate);
+		dude1.IntersectsWith(gateUp);
 		dude1.Update(keys);
 	}
 	else {
@@ -102,6 +107,7 @@ void Level2::go(int p)
 		dude2.IntersectsWith(wall4);
 		dude2.IntersectsWith(pin);
 		dude2.IntersectsWith(gate);
+		dude2.IntersectsWith(gateUp);
 		dude2.Update(keys);
 
 	}

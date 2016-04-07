@@ -10,7 +10,7 @@
 #include "Level2.h"
 #include "Level3.h"
 #include "Level4.h"
-
+using namespace std;
 
 #define NUM_THREADS 3
 
@@ -41,8 +41,17 @@ Enemy enemy1;
 Enemy enemy2;
 Enemy enemy3;
 
-Structure p1Lives;
-Structure p2Lives;
+
+Structure p1H3;
+Structure p1H2;
+Structure p1H1;
+Structure p1H0;
+
+Structure p2H3;
+Structure p2H2;
+Structure p2H1;
+Structure p2H0;
+
 Structure startStructure;
 
 Level1 lv1;
@@ -50,6 +59,7 @@ Level2 lv2;
 Level3 lv3;
 Level4 lv4;
 
+bool playing = true;
 //-------------------------------------------------------------------------------------------------------------
 
 SDL_Texture *LoadTexture(std::string filePath, SDL_Renderer *renderTarget)
@@ -69,6 +79,15 @@ void LoadGame()
 	camera.y = 0;
 	camera.w = 640;
 	camera.h = 480;
+
+	p1H3.activateStructure(renderTarget, "threeLives.png", 0, 0, 150, 40);
+	p1H2.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
+	p1H1.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
+	p1H0.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
+	p2H3.activateStructure(renderTarget, "threeLives.png", 880, 0, 150, 40);
+	p2H2.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
+	p2H1.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
+	p2H0.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
 }
 
 void *player1Actions(void *threadid)
@@ -83,6 +102,7 @@ void *player1Actions(void *threadid)
 		SDL_PollEvent(&occur);
 		if (occur.type == SDL_QUIT) {
 			running = false;
+			playing = false;
 		}
 		if(lvl == 1)
 			lv1.go(1);
@@ -96,6 +116,7 @@ void *player1Actions(void *threadid)
 	}
 
 	pthread_exit(NULL);
+	SDL_Quit();
 	return 0;
 }
 
@@ -110,6 +131,7 @@ void *player2Actions(void *threadid)
 		SDL_PollEvent(&occur);
 		if (occur.type == SDL_QUIT) {
 			running = false;
+			playing = false;
 		}
 		if (lvl == 1)
 			lv1.go(2);
@@ -122,6 +144,7 @@ void *player2Actions(void *threadid)
 	}
 
 	pthread_exit(NULL);
+	SDL_Quit();
 	return 0;
 }
 
@@ -134,6 +157,7 @@ void *enemyActions(void *threadid)
 		SDL_PollEvent(&occur);
 		if (occur.type == SDL_QUIT) {
 			running = false;
+			playing = false;
 		}
 		if (lvl == 3)
 			lv3.updateEnemies();
@@ -143,6 +167,7 @@ void *enemyActions(void *threadid)
 	}
 
 	pthread_exit(NULL);
+	SDL_Quit();
 	return 0;
 }
 
@@ -171,7 +196,7 @@ void Logic()
 	rc = pthread_create(&threads[i], NULL,
 	player2Actions, (void *)i);
 	if (rc) {
-	exit(-1);
+		exit(-1);
 	}
 
 
@@ -183,6 +208,32 @@ void Logic()
 		exit(-1);
 	}
 
+
+}
+
+void DrawHealth()
+{
+	if (p1Health == 3)
+		p1H3.DrawStill(renderTarget);
+	if (p1Health == 2)
+		p1H2.DrawStill(renderTarget);
+	if (p1Health == 1)
+		p1H1.DrawStill(renderTarget);
+	if (p1Health <= 0) {
+		p1H0.DrawStill(renderTarget);
+		SDL_Delay(100);
+	}
+
+	if (p2Health == 3)
+		p2H3.DrawStill(renderTarget);
+	if (p2Health == 2)
+		p2H2.DrawStill(renderTarget);
+	if (p2Health == 1)
+		p2H1.DrawStill(renderTarget);
+	if (p2Health <= 0) {
+		p2H0.DrawStill(renderTarget);
+		SDL_Delay(100);
+	}
 }
 
 void DrawScreen()
@@ -191,8 +242,7 @@ void DrawScreen()
 	SDL_SetRenderDrawColor(renderTarget, 0, 0, 0, 0);
 	SDL_RenderClear(renderTarget);
 	SDL_RenderCopy(renderTarget, texture, &camera, NULL);
-	p1Lives.DrawStill(renderTarget);
-	p2Lives.DrawStill(renderTarget);
+	DrawHealth();
 	if (lvl == 1) {
 		lv1.Draw();
 		lv1.DrawP1();
@@ -220,27 +270,7 @@ void DrawScreen()
 
 }
 
-void checkHealth()
-{
 
-	if (p1Health == 3)
-		p1Lives.activateStructure(renderTarget, "threeLives.png", 0, 0, 150, 40);
-	if (p1Health == 2)
-		p1Lives.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
-	if (p1Health == 1)
-		p1Lives.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
-	if (p1Health <= 0)
-		p1Lives.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
-
-	if (p2Health == 3)
-		p2Lives.activateStructure(renderTarget, "threeLives.png", 880, 0, 150, 40);
-	if (p2Health == 2)
-		p2Lives.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
-	if (p2Health == 1)
-		p2Lives.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
-	if (p2Health <= 0)
-		p2Lives.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
-}
 
 
 void go()
@@ -257,16 +287,16 @@ void go()
 	bool running = true;
 	SDL_Event ev;
 
-	while (running) {
+	while (playing) {
 
 		while (SDL_PollEvent(&ev) != 0)
 		{
-			if (ev.type == SDL_QUIT)
+			if (ev.type == SDL_QUIT) {
 				running = false;
+				playing = false;
+			}
 		}
  
-		
-		checkHealth();
 		DrawScreen();
 		if (keyState[SDL_SCANCODE_ESCAPE])
 			running = false;
