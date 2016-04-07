@@ -20,7 +20,8 @@ void Enemy::activateEnemy(SDL_Renderer *renderTarget, std::string filePath, int 
 	positionRect.x = x;
 	positionRect.y = y;
 	type = o;
-
+	startY = positionRect.y;
+	startX = positionRect.x;
 	positionRect.w = 25;
 	positionRect.h = 25;
 	frameWidth = positionRect.w;
@@ -30,8 +31,6 @@ void Enemy::activateEnemy(SDL_Renderer *renderTarget, std::string filePath, int 
 
 	isActive = true;
 
-	
-	moveSpeed = 1;
 }
 
 Enemy::~Enemy()
@@ -42,27 +41,54 @@ Enemy::~Enemy()
 
 
 
-void Enemy::Update()
+void Enemy::Update(int end)
 {
 	if (type == 1) {
-		for (int i = 0; i < 750; i++) {
-			positionRect.x++;
-			SDL_Delay(1);
+		if (goingRight == 1) {
+			if (positionRect.x < end) {
+				positionRect.x += moveSpeed;
+				SDL_Delay(1);
+			}
+			else {
+				goingLeft = 1;
+				goingRight = 0;
+			}
 		}
-		for (int i = 750; i > 0; i--) {
-			positionRect.x--;
-			SDL_Delay(1);
+
+		if (goingLeft == 1) {
+			if (positionRect.x + positionRect.w > startX) {
+				positionRect.x -= moveSpeed;
+				SDL_Delay(1);
+			}
+			else {
+				goingRight = 1;
+				goingLeft = 0;
+			}
 		}
 	}
 	if (type == 2) {
-		for (int i = 0; i < 450; i++) {
-			positionRect.y++;
-			SDL_Delay(1);
+		if (goingDown == 1) {
+			if (positionRect.y +positionRect.h < end) {
+				positionRect.y += moveSpeed;
+				SDL_Delay(1);
+			}
+			else {
+				goingUp = 1;
+				goingDown = 0;
+			}
 		}
-		for (int i = 450; i > 0; i--) {
-			positionRect.y--;
-			SDL_Delay(1);
+
+		if (goingUp == 1) {
+			if (positionRect.y + positionRect.h > startY) {
+				positionRect.y -= moveSpeed;
+				SDL_Delay(1);
+			}
+			else {
+				goingDown = 1;
+				goingUp = 0;
+			}
 		}
+
 	}
 }
 

@@ -9,21 +9,27 @@ class Enemy
 {
 private:
 	SDL_Texture *texture;
-	float moveSpeed;
 	float frameCounter;
 	int frameWidth, frameHeight;
 	int textureWidth;
 	bool isActive;
 	int type;
 	SDL_Scancode keys[3];
+	int goingRight = 1;
+	int goingLeft = 0;
+	int startX;
+	int goingDown = 1;
+	int goingUp = 0;
+	int startY;
 
 public:
 	Enemy();
 	~Enemy();
 	void activateEnemy(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int i);
-	void Update();
+	void Update(int end);
 	void Draw(SDL_Renderer *renderTarget, SDL_Rect camera);
 	int GetOriginX();
 	int GetOriginY();
 	SDL_Rect positionRect;
+	int moveSpeed;
 };

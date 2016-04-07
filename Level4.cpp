@@ -6,19 +6,19 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Structure.h"
-#include "Level2.h"
+#include "Level4.h"
 
-Level2::Level2()
+Level4::Level4()
 {
 
 }
 
-Level2::~Level2()
+Level4::~Level4()
 {
 
 }
 
-void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
+void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	renderTarget = renderer;
 	camera = cameraRect;
 	dude1.activatePlayer(renderTarget, "player1.png", 50, 300, 3, 4, 1);
@@ -28,18 +28,21 @@ void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	lava.w = 5000;
 	lava.h = 30;
 	pin = pinStructure.activateStructure(renderTarget, "", 0, 0, 1, 5000);
-	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 550, 1500, 30);
-	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 200, 350, 250, 30);
-	wall2 = wall2Structure.activateStructure(renderTarget, "wall.png", 550, 450, 250, 30);
-	wall3 = wall3Structure.activateStructure(renderTarget, "wall.png", 1070, 430, 250, 30);
+	road = roadStructure.activateStructure(renderTarget, "road.png", 0, 550, 1850, 30);
+	wall1 = wall1Structure.activateStructure(renderTarget, "wall.png", 2600, 350, 250, 30);
+	wall2 = wall2Structure.activateStructure(renderTarget, "wall.png", 2000, 550, 250, 30);
+	wall3 = wall3Structure.activateStructure(renderTarget, "wall.png", 1070, 430, 500, 30);
 	wall4 = wall4Structure.activateStructure(renderTarget, "wallVert.png", 1320, 430, 30, 120);
-	door = doorStructure.activateStructure(renderTarget, "door.png", 250, 270, 40, 80);
-	key = keyStructure.activateStructure(renderTarget, "key.png", 1200, 500, 30, 30);
+	wall5 = wall5Structure.activateStructure(renderTarget, "wall.png", 2360, 465, 180, 30);
+	door = doorStructure.activateStructure(renderTarget, "door.png", 2700, 270, 40, 80);
+	key = keyStructure.activateStructure(renderTarget, "key.png", 1400, 500, 30, 30);
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
 	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 505, 40, 50);
+	button2 = buttonStructure2.activateStructure(renderTarget, "button.png", 1200, 505, 40, 50);
+	makeEnemies();
 }
 
-void Level2::Draw()
+void Level4::Draw()
 {
 	camera.x = dude1.GetOriginX() - 320;
 
@@ -50,8 +53,10 @@ void Level2::Draw()
 	wall2Structure.Draw(renderTarget, camera);
 	wall3Structure.Draw(renderTarget, camera);
 	wall4Structure.Draw(renderTarget, camera);
+	wall5Structure.Draw(renderTarget, camera);
 	doorStructure.Draw(renderTarget, camera);
 	buttonStructure.Draw(renderTarget, camera);
+	buttonStructure2.Draw(renderTarget, camera);
 	if (!hasKey) {
 		keyStructure.Draw(renderTarget, camera);
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 0, 0);
@@ -65,23 +70,93 @@ void Level2::Draw()
 
 	}
 	else {
+
 		gate = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 		gateStructure2.Draw(renderTarget, camera);
 	}
+
+	if (!hasPressedButton2) {
+		gate2 = gate2Structure.activateStructure(renderTarget, "gate.png", 1475, 451, 100, 100);
+		gate2Structure.Draw(renderTarget, camera);
+
+	}
+	else {
+		gate2 = gate2Structure2.activateStructure(renderTarget, "gate.png", 1475, 360, 100, 100);
+		gate2Structure2.Draw(renderTarget, camera);
+	}
 }
 
-void Level2::DrawP1()
+void Level4::DrawP1()
 {
 	dude1.Draw(renderTarget, camera);
 }
 
-void Level2::DrawP2()
+void Level4::DrawP2()
 {
 	dude2.Draw(renderTarget, camera);
 }
 
+void Level4::makeEnemies()
+{
+	enemy1.activateEnemy(renderTarget, "enemy.png", 1070, 405, 1);
+	enemy1.moveSpeed = 3;
 
-void Level2::go(int p)
+	enemy2.activateEnemy(renderTarget, "enemy.png", 2000, 525, 1);
+	enemy2.moveSpeed = 2;
+
+	enemy3.activateEnemy(renderTarget, "enemy.png", 2360, 440, 1);
+	enemy3.moveSpeed = 1;
+}
+void Level4::updateEnemies()
+{
+	enemy1.Update(1570);
+	enemy2.Update(2250);
+	enemy3.Update(2540);
+}
+
+void Level4::DrawEnemies()
+{
+	enemy1.Draw(renderTarget, camera);
+	enemy2.Draw(renderTarget, camera);
+	enemy3.Draw(renderTarget, camera);
+}
+
+void Level4::checkDamage(int p)
+{
+	if (p == 1)
+	{
+		if (dude1.IntersectsWith(enemy1) || dude1.IntersectsWith(enemy2) || dude1.IntersectsWith(enemy3)) {
+			p1Damaged = 1;
+		}
+		else {
+			p1BeingHit = 0;
+			p1Damaged = 0;
+		}
+		if (p1Damaged == 1 && p1BeingHit == 0)
+		{
+			p1Health--;
+			p1BeingHit = 1;
+		}
+	}
+	else
+	{
+		if (dude2.IntersectsWith(enemy1) || dude2.IntersectsWith(enemy2) || dude2.IntersectsWith(enemy3)) {
+			p2Damaged = 1;
+		}
+		else {
+			p2BeingHit = 0;
+			p2Damaged = 0;
+		}
+		if (p2Damaged == 1 && p2BeingHit == 0)
+		{
+			p2Health--;
+			p2BeingHit = 1;
+		}
+	}
+}
+
+
+void Level4::go(int p)
 {
 
 	if (p == 1) {
@@ -92,6 +167,8 @@ void Level2::go(int p)
 		dude1.IntersectsWith(wall4);
 		dude1.IntersectsWith(pin);
 		dude1.IntersectsWith(gate);
+		dude1.IntersectsWith(gate2);
+		dude1.IntersectsWith(wall5);
 		dude1.Update(keys);
 	}
 	else {
@@ -102,9 +179,13 @@ void Level2::go(int p)
 		dude2.IntersectsWith(wall4);
 		dude2.IntersectsWith(pin);
 		dude2.IntersectsWith(gate);
+		dude2.IntersectsWith(gate2);
+		dude2.IntersectsWith(wall5);
 		dude2.Update(keys);
 
 	}
+
+	checkDamage(p);
 
 	if (dude1.Passes(button) || dude2.Passes(button)) {
 		hasPressedButton = true;
@@ -113,10 +194,18 @@ void Level2::go(int p)
 		hasPressedButton = false;
 	}
 
+	if (dude1.Passes(button2) || dude2.Passes(button2)) {
+		hasPressedButton2 = true;
+	}
+	else {
+		hasPressedButton2 = false;
+	}
+
+
 	if (dude1.Passes(key) || dude2.Passes(key)) {
 		hasKey = true;
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
-		
+
 	}
 
 
@@ -133,11 +222,10 @@ void Level2::go(int p)
 	if (dude2.Passes(lava)) {
 		p2Health = 0;
 	}
-
 	checkDeath();
 }
 
-void Level2::checkDeath()
+void Level4::checkDeath()
 {
 	if (p1Health == 0 || p2Health == 0)
 	{

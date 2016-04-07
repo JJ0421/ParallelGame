@@ -5,7 +5,7 @@
 #include "stdio.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
-
+using namespace std;
 Player::Player()
 {
 }
@@ -39,14 +39,12 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 		keys[1] = SDL_SCANCODE_A;
 		keys[2] = SDL_SCANCODE_D;
 		keys[3] = SDL_SCANCODE_S;
-		lives = p1Health;
 	}
 	else {
 		keys[0] = SDL_SCANCODE_UP;
 		keys[1] = SDL_SCANCODE_LEFT;
 		keys[2] = SDL_SCANCODE_RIGHT;
 		keys[3] = SDL_SCANCODE_DOWN;
-		lives = p2Health;
 	}
 
 	playerJump = 150;
@@ -168,38 +166,11 @@ bool Player::IntersectsWith(Enemy &e)
 		SDL_SetTextureColorMod(texture, 255, 255, 255);
 		return false;
 	}
+	else {
+		SDL_SetTextureColorMod(texture, 255, 0, 0);
+		return true;
+	}
 
-
-	if ((positionRect.x + positionRect.w) == e.positionRect.x) {
-		SDL_SetTextureColorMod(texture, 255, 0, 0);
-		SDL_Delay(3);
-		damaged = 1;
-		return true;
-	}
-	if (positionRect.x == e.positionRect.x + e.positionRect.w) {
-		SDL_SetTextureColorMod(texture, 255, 0, 0);
-		SDL_Delay(3);
-		damaged = 1;
-		return true;
-	}
-	if (positionRect.y + positionRect.h == e.positionRect.y) {
-		SDL_SetTextureColorMod(texture, 255, 0, 0);
-		SDL_Delay(3);
-		damaged = 1;
-		return true;
-	}
-	if (positionRect.y == e.positionRect.y + e.positionRect.h) {
-		SDL_SetTextureColorMod(texture, 255, 0, 0);
-		SDL_Delay(3);
-		damaged = 1;
-		return true;
-	}
-	if (damaged == 1) {
-		lives--;
-		if (lives == 0)
-			positionRect.x = 0;
-		damaged = 0;
-	}
 
 }
 

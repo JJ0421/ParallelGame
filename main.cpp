@@ -8,9 +8,11 @@
 #include "Structure.h"
 #include "Level1.h"
 #include "Level2.h"
+#include "Level3.h"
+#include "Level4.h"
 
 
-#define NUM_THREADS 10
+#define NUM_THREADS 3
 
 
 //-------------------------------------------------------------------------------------------------------------
@@ -45,6 +47,8 @@ Structure startStructure;
 
 Level1 lv1;
 Level2 lv2;
+Level3 lv3;
+Level4 lv4;
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -84,11 +88,14 @@ void *player1Actions(void *threadid)
 			lv1.go(1);
 		if (lvl == 2)
 			lv2.go(1);
+		if (lvl == 3)
+			lv3.go(1);
+		if (lvl == 4)
+			lv4.go(1);
 
 	}
 
 	pthread_exit(NULL);
-	SDL_Quit();
 	return 0;
 }
 
@@ -108,52 +115,37 @@ void *player2Actions(void *threadid)
 			lv1.go(2);
 		if (lvl == 2)
 			lv2.go(2);
+		if (lvl == 3)
+			lv3.go(2);
+		if (lvl == 4)
+			lv4.go(2);
 	}
 
 	pthread_exit(NULL);
-	SDL_Quit();
 	return 0;
 }
 
-void *aiMove1(void *threadid)
+void *enemyActions(void *threadid)
 {
 
 	bool running = true;
-
 	while (running) {
 
 		SDL_PollEvent(&occur);
 		if (occur.type == SDL_QUIT) {
 			running = false;
 		}
-		enemy1.Update();
+		if (lvl == 3)
+			lv3.updateEnemies();
+		if (lvl == 4)
+			lv4.updateEnemies();
 
 	}
 
 	pthread_exit(NULL);
-	SDL_Quit();
 	return 0;
 }
 
-void *aiMove2(void *threadid)
-{
-
-	bool running = true;
-
-	while (running) {
-
-		SDL_PollEvent(&occur);
-		if (occur.type == SDL_QUIT) {
-			running = false;
-		}
-		enemy2.Update();
-
-	}
-
-	pthread_exit(NULL);
-	SDL_Quit();
-	return 0;
-}
 
 
 
@@ -182,24 +174,15 @@ void Logic()
 	exit(-1);
 	}
 
-	/*
+
 
 	i = 2;
 	rc = pthread_create(&threads[i], NULL,
-	aiMove1, (void *)i);
+	enemyActions, (void *)i);
 	if (rc) {
-	exit(-1);
+		exit(-1);
 	}
 
-
-	i = 3;
-	rc = pthread_create(&threads[i], NULL,
-	aiMove2, (void *)i);
-	if (rc) {
-	exit(-1);
-	}
-
-	*/
 }
 
 void DrawScreen()
@@ -220,6 +203,18 @@ void DrawScreen()
 		lv2.DrawP1();
 		lv2.DrawP2();
 	}
+	if (lvl == 3) {
+		lv3.Draw();
+		lv3.DrawP1();
+		lv3.DrawP2();
+		lv3.DrawEnemies();
+	}
+	if (lvl == 4) {
+		lv4.Draw();
+		lv4.DrawP1();
+		lv4.DrawP2();
+		lv4.DrawEnemies();
+	}
 	SDL_RenderPresent(renderTarget);
 
 
@@ -234,7 +229,7 @@ void checkHealth()
 		p1Lives.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
 	if (p1Health == 1)
 		p1Lives.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
-	if (p1Health == 0)
+	if (p1Health <= 0)
 		p1Lives.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
 
 	if (p2Health == 3)
@@ -243,7 +238,7 @@ void checkHealth()
 		p2Lives.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
 	if (p2Health == 1)
 		p2Lives.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
-	if (p2Health == 0)
+	if (p2Health <= 0)
 		p2Lives.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
 }
 
@@ -257,6 +252,8 @@ void go()
 	
 	lv1.activateLevel(renderTarget, camera);
 	lv2.activateLevel(renderTarget, camera);
+	lv3.activateLevel(renderTarget, camera);
+	lv4.activateLevel(renderTarget, camera);
 	bool running = true;
 	SDL_Event ev;
 
@@ -274,23 +271,13 @@ void go()
 		if (keyState[SDL_SCANCODE_ESCAPE])
 			running = false;
 	}
-
-	SDL_DestroyWindow(window);
-	SDL_DestroyTexture(texture);
-	SDL_DestroyRenderer(renderTarget);
-
-	texture = nullptr;
-	window = nullptr;
-	renderTarget = nullptr;
-	IMG_Quit();
-	SDL_Quit();
 }
 
 bool mainMenu()
 {
 	bool play = false;
 	SDL_Event ev;
-	startStructure.activateStructure(renderTarget, "start1.png", 410, 100, 200, 100);
+	startStructure.activateStructure(renderTarget, "start1.png", 480, 100, 200, 100);
 	while (play == false)
 	{
 		while (SDL_PollEvent(&ev) != 0) {
@@ -307,20 +294,15 @@ bool mainMenu()
 					SDL_DestroyTexture(texture);
 					SDL_DestroyRenderer(renderTarget);
 
-					texture = nullptr;
-					window = nullptr;
-					renderTarget = nullptr;
-					IMG_Quit();
-					SDL_Quit();
 					return false;
 				}
 
 				if (ev.type == SDL_MOUSEMOTION) {
-					if (ev.button.x >= 410 && ev.button.x <= 610 && ev.button.y >= 100 && ev.button.y <= 200) {
+					if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200) {
 						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);						
 					}	
 				}
-				if (ev.button.x >= 410 && ev.button.x <= 610 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONUP) {
+				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONUP) {
 					SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
 					play = true;
 				}
@@ -333,13 +315,20 @@ bool mainMenu()
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1040, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1150, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (mainMenu() == true) {
 		go();
 	}
 
-
+	texture = nullptr;
+	window = nullptr;
+	renderTarget = nullptr;
+	SDL_DestroyWindow(window);
+	SDL_DestroyTexture(texture);
+	SDL_DestroyRenderer(renderTarget);
+	IMG_Quit();
+	SDL_Quit();
 	return 0;
 
 }

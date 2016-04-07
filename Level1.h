@@ -26,6 +26,8 @@ private:
 	SDL_Rect wall2;
 	SDL_Rect door;
 	SDL_Rect key;
+	SDL_Rect lava;
+
 
 	Structure pinStructure;
 	Structure roadStructure;
@@ -48,6 +50,6 @@ public:
 	void DrawP1();
 	void DrawP2();
 	void go(int p);
-
+	void checkDeath();
 
 };

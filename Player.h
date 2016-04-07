@@ -20,6 +20,7 @@ private:
 	float frameCounter;
 	int frameWidth, frameHeight;
 	int textureWidth;
+	int oldHealth;
 	bool isActive;
 	SDL_Scancode keys[4];
 
@@ -37,7 +38,6 @@ public:
 	int GetOriginY();
 	void gravity();
 	int damaged = 0;
-	int lives;
 	int grav;
 	int playerJump;
 	SDL_Rect positionRect;
