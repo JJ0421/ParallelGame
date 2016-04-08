@@ -89,10 +89,10 @@ void LoadGame()
 	p1H2.activateStructure(renderTarget, "twoLives.png", 0, 0, 150, 40);
 	p1H1.activateStructure(renderTarget, "oneLife.png", 0, 0, 150, 40);
 	p1H0.activateStructure(renderTarget, "dead.png", 0, 0, 150, 40);
-	p2H3.activateStructure(renderTarget, "threeLives.png", 880, 0, 150, 40);
-	p2H2.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
-	p2H1.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
-	p2H0.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
+	p2H3.activateStructure(renderTarget, "threeLives.png", 1000, 0, 150, 40);
+	p2H2.activateStructure(renderTarget, "twoLives.png", 1000, 0, 150, 40);
+	p2H1.activateStructure(renderTarget, "oneLife.png", 1000, 0, 150, 40);
+	p2H0.activateStructure(renderTarget, "dead.png", 1000, 0, 150, 40);
 	bgm = Mix_LoadMUS("bgm.wav");
 
 }

@@ -16,6 +16,7 @@ class Level4 {
 private:
 	Mix_Chunk *pickup;
 	Mix_Chunk *nextLevel;
+	Mix_Chunk *buttonSound;
 	SDL_Rect camera;
 	SDL_Renderer *renderTarget = nullptr;
 
@@ -72,6 +73,8 @@ private:
 	int p1BeingHit;
 	int p2Damaged;
 	int p2BeingHit;
+	int buttonKey1 = 0;
+	int buttonKey2 = 0;
 
 
 public:

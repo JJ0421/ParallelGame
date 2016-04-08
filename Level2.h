@@ -16,6 +16,8 @@ class Level2 {
 private:
 	Mix_Chunk *pickup;
 	Mix_Chunk *nextLevel;
+	Mix_Chunk *buttonSound;
+	int buttonKey = 0;
 	SDL_Rect camera;
 	SDL_Renderer *renderTarget = nullptr;
 

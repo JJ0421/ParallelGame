@@ -17,6 +17,7 @@ Level4::~Level4()
 {
 	Mix_FreeChunk(pickup);
 	Mix_FreeChunk(nextLevel);
+	Mix_FreeChunk(buttonSound);
 }
 
 void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
@@ -46,6 +47,7 @@ void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	gate2Up = gate2Structure2.activateStructure(renderTarget, "gate.png", 1475, 360, 100, 100);
 	pickup = Mix_LoadWAV("pickup.wav");
 	nextLevel = Mix_LoadWAV("levelUp.wav");
+	buttonSound = Mix_LoadWAV("gateOpen2.wav");
 	makeEnemies();
 }
 
@@ -75,9 +77,14 @@ void Level4::Draw()
 		gateStructure.Draw(renderTarget, camera);
 		gateUp.y = 451;
 		gate.y = 451;
+		buttonKey1 = 0;
 
 	}
 	else {
+		if (buttonKey1 == 0) {
+			Mix_PlayChannel(1, buttonSound, 0);
+			buttonKey1 = 1;
+		}
 		gateStructure2.Draw(renderTarget, camera);
 		gateUp.y = 360;
 		gate.y = 360;
@@ -87,9 +94,14 @@ void Level4::Draw()
 		gate2Up.y = 451;
 		gate2.y = 451;
 		gate2Structure.Draw(renderTarget, camera);
+		buttonKey2 = 0;
 
 	}
 	else {
+		if (buttonKey2 == 0) {
+			Mix_PlayChannel(1, buttonSound, 0);
+			buttonKey2 = 1;
+		}
 		gate2Structure2.Draw(renderTarget, camera);
 		gate2Up.y = 360;
 		gate2.y = 360;
