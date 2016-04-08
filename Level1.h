@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Structure.h"
+#include "SDL/SDL_mixer.h"
 
 
 extern int p1Health;
@@ -14,6 +15,8 @@ extern int p2Health;
 extern int lvl;
 class Level1 {
 private:
+	Mix_Chunk *pickup;
+	Mix_Chunk *nextLevel;
 	SDL_Rect camera;
 	SDL_Renderer *renderTarget = nullptr;
 

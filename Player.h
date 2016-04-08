@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_mixer.h"
 #include "Enemy.h"
 #include "Structure.h"
 
@@ -16,6 +17,7 @@ private:
 	SDL_Rect cropRect;
 	SDL_Texture *texture;
 	SDL_Texture *texture2;
+	Mix_Chunk *jumpSound;
 	float moveSpeed;
 	float frameCounter;
 	int frameWidth, frameHeight;
@@ -23,6 +25,7 @@ private:
 	int oldHealth;
 	bool isActive;
 	SDL_Scancode keys[4];
+	Mix_Chunk *hit;
 
 public:
 	Player();

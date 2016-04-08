@@ -5,6 +5,7 @@
 #include "stdio.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_mixer.h"
 using namespace std;
 Player::Player()
 {
@@ -14,6 +15,9 @@ Player::Player()
 void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, int x, int y, int framesX, int framesY,int playerNumber)
 {
 	SDL_Surface *surface = IMG_Load(filePath.c_str());
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+	jumpSound = Mix_LoadWAV("jump.wav");
+	hit = Mix_LoadWAV("hit.wav");
 	texture = SDL_CreateTextureFromSurface(renderTarget, surface);
 	SDL_FreeSurface(surface);
 
@@ -30,6 +34,7 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 
 	positionRect.w = 30;
 	positionRect.h = 30;
+	
 
 	isActive = false;
 
@@ -54,6 +59,8 @@ void Player::activatePlayer(SDL_Renderer *renderTarget, std::string filePath, in
 Player::~Player()
 {
 	SDL_DestroyTexture(texture);
+	Mix_FreeChunk(jumpSound);
+	Mix_FreeChunk(hit);
 }
 
 
@@ -71,6 +78,7 @@ void Player::Update(const Uint8 *keyState)
 	isActive = true;
 	if (keyState[keys[0]] && isPressed == 0 && collide == 1)
 	{
+		Mix_PlayChannel(1, jumpSound, 0);
 		isPressed = 1;
 		oldPosition = positionRect.y;
 		cropRect.y = frameHeight * 3;
@@ -167,6 +175,7 @@ bool Player::IntersectsWith(Enemy &e)
 		return false;
 	}
 	else {
+		Mix_PlayChannel(1, hit, 0);
 		SDL_SetTextureColorMod(texture, 255, 0, 0);
 		return true;
 	}

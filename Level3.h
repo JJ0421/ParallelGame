@@ -14,6 +14,8 @@ extern int p2Health;
 extern int lvl;
 class Level3 {
 private:
+	Mix_Chunk *pickup;
+	Mix_Chunk *nextLevel;
 	SDL_Rect camera;
 	SDL_Renderer *renderTarget = nullptr;
 

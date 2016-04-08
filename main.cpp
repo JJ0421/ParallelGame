@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_mixer.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Structure.h"
@@ -58,6 +59,10 @@ Level1 lv1;
 Level2 lv2;
 Level3 lv3;
 Level4 lv4;
+Mix_Music *bgm;
+Mix_Chunk *hover;
+Mix_Chunk *select;
+
 
 bool playing = true;
 //-------------------------------------------------------------------------------------------------------------
@@ -88,6 +93,8 @@ void LoadGame()
 	p2H2.activateStructure(renderTarget, "twoLives.png", 880, 0, 150, 40);
 	p2H1.activateStructure(renderTarget, "oneLife.png", 880, 0, 150, 40);
 	p2H0.activateStructure(renderTarget, "dead.png", 880, 0, 150, 40);
+	bgm = Mix_LoadMUS("bgm.wav");
+
 }
 
 void *player1Actions(void *threadid)
@@ -296,10 +303,12 @@ void go()
 				playing = false;
 			}
 		}
- 
+		if (!Mix_PlayingMusic())
+			Mix_PlayMusic(bgm, -1);
+
 		DrawScreen();
 		if (keyState[SDL_SCANCODE_ESCAPE])
-			running = false;
+			playing = false;
 	}
 }
 
@@ -308,6 +317,9 @@ bool mainMenu()
 	bool play = false;
 	SDL_Event ev;
 	startStructure.activateStructure(renderTarget, "start1.png", 480, 100, 200, 100);
+	hover = Mix_LoadWAV("hover.wav");
+	select = Mix_LoadWAV("select.wav");
+	int hovering = 0;
 	while (play == false)
 	{
 		while (SDL_PollEvent(&ev) != 0) {
@@ -329,8 +341,14 @@ bool mainMenu()
 
 				if (ev.type == SDL_MOUSEMOTION) {
 					if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200) {
-						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);						
-					}	
+						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
+						if(hovering == 0)
+							Mix_PlayChannel(1, hover, 0);
+						hovering = 1;
+					}
+					else {
+						hovering = 0;
+					}
 				}
 				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONUP) {
 					SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
@@ -340,6 +358,7 @@ bool mainMenu()
 		}
 
 	}
+	Mix_PlayChannel(1, select, 0);
 	return play;
 }
 
@@ -347,6 +366,7 @@ int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1150, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	if (mainMenu() == true) {
 		go();
 	}
@@ -354,9 +374,16 @@ int main(int argc, char *argv[]) {
 	texture = nullptr;
 	window = nullptr;
 	renderTarget = nullptr;
+	bgm = nullptr;
+	hover = nullptr;
+	select = nullptr;
+	Mix_FreeMusic(bgm);
+	Mix_FreeChunk(hover);
+	Mix_FreeChunk(select);
 	SDL_DestroyWindow(window);
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderTarget);
+	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
 	return 0;

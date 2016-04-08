@@ -15,7 +15,8 @@ Level4::Level4()
 
 Level4::~Level4()
 {
-
+	Mix_FreeChunk(pickup);
+	Mix_FreeChunk(nextLevel);
 }
 
 void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
@@ -43,6 +44,8 @@ void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	gateUp = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 	gate2 = gate2Structure.activateStructure(renderTarget, "gate.png", 1475, 451, 100, 100);
 	gate2Up = gate2Structure2.activateStructure(renderTarget, "gate.png", 1475, 360, 100, 100);
+	pickup = Mix_LoadWAV("pickup.wav");
+	nextLevel = Mix_LoadWAV("levelUp.wav");
 	makeEnemies();
 }
 
@@ -215,13 +218,15 @@ void Level4::go(int p)
 
 	if (dude1.Passes(key) || dude2.Passes(key)) {
 		hasKey = true;
+		Mix_PlayChannel(1, pickup, 0);
+		pickup = nullptr;
 		SDL_SetTextureColorMod(doorStructure.texture, 255, 255, 255);
-
 	}
 
 
 	if (hasKey) {
 		if (dude1.Passes(door) && dude2.Passes(door)) {
+			Mix_PlayChannel(1, nextLevel, 0);
 			lvl = 3;
 		}
 	}
@@ -245,6 +250,7 @@ void Level4::checkDeath()
 		dude2.positionRect.x = 20;
 		dude2.positionRect.y = 0;
 		hasKey = false;
+		pickup = Mix_LoadWAV("pickup.wav");
 		p1Health = 3;
 		p2Health = 3;
 	}
