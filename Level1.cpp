@@ -7,7 +7,7 @@
 #include "Enemy.h"
 #include "Structure.h"
 #include "Level1.h"
-
+using namespace std;
 Level1::Level1()
 {
 
@@ -41,10 +41,21 @@ void Level1::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 
 void Level1::Draw()
 {
-	camera.x = dude1.GetOriginX() - 620;
+	if (keys[SDL_SCANCODE_SPACE]) {
+		cam = 2;
+	}
+
+	if (keys[SDL_SCANCODE_DELETE]) {
+		cam = 1;
+	}
+
+	if(cam % 2 == 0)
+		camera.x = dude1.GetOriginX() - 620;
+	else {
+		camera.x = dude2.GetOriginX() - 620;
+	}
 	if (camera.x < 0)
 		camera.x = 0;
-
 	
 	roadStructure.Draw(renderTarget, camera);
 	wall1Structure.Draw(renderTarget, camera);

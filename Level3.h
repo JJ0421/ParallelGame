@@ -45,6 +45,7 @@ private:
 	int p1BeingHit;
 	int p2Damaged;
 	int p2BeingHit;
+	int cam;
 	
 public:
 	Level3();

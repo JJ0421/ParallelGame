@@ -44,6 +44,10 @@ private:
 
 	int playerNumber;
 	bool hasKey;
+	int cam;
+	int isPressed = 0;
+	int timer = 0;
+	SDL_Event ev;
 public:
 	Level1();
 	~Level1();

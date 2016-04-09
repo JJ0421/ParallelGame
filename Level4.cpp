@@ -40,7 +40,7 @@ void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 	key = keyStructure.activateStructure(renderTarget, "key.png", 1400, 500, 30, 30);
 	KeyOrNo.activateStructure(renderTarget, "keyMini.png", 505, 0, 30, 30);
 	button = buttonStructure.activateStructure(renderTarget, "button.png", 900, 505, 40, 50);
-	button2 = buttonStructure2.activateStructure(renderTarget, "button.png", 1200, 505, 40, 50);
+	button2 = buttonStructure2.activateStructure(renderTarget, "button.png", 1215, 505, 40, 50);
 	gate = gateStructure.activateStructure(renderTarget, "gate.png", 1070, 451, 100, 100);
 	gateUp = gateStructure2.activateStructure(renderTarget, "gate.png", 1070, 360, 100, 100);
 	gate2 = gate2Structure.activateStructure(renderTarget, "gate.png", 1475, 451, 100, 100);
@@ -53,8 +53,19 @@ void Level4::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 
 void Level4::Draw()
 {
-	camera.x = dude1.GetOriginX() - 320;
+	if (keys[SDL_SCANCODE_SPACE]) {
+		cam = 2;
+	}
 
+	if (keys[SDL_SCANCODE_DELETE]) {
+		cam = 1;
+	}
+
+	if (cam % 2 == 0)
+		camera.x = dude1.GetOriginX() - 620;
+	else {
+		camera.x = dude2.GetOriginX() - 620;
+	}
 	if (camera.x < 0)
 		camera.x = 0;
 	roadStructure.Draw(renderTarget, camera);

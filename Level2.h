@@ -56,6 +56,7 @@ private:
 	int playerNumber;
 	bool hasKey;
 	bool hasPressedButton;
+	int cam;
 public:
 	Level2();
 	~Level2();

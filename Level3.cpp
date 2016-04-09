@@ -69,7 +69,19 @@ void Level3::DrawEnemies()
 
 void Level3::Draw()
 {
-	camera.x = dude1.GetOriginX() - 620;
+	if (keys[SDL_SCANCODE_SPACE]) {
+		cam = 2;
+	}
+
+	if (keys[SDL_SCANCODE_DELETE]) {
+		cam = 1;
+	}
+
+	if (cam % 2 == 0)
+		camera.x = dude1.GetOriginX() - 620;
+	else {
+		camera.x = dude2.GetOriginX() - 620;
+	}
 	if (camera.x < 0)
 		camera.x = 0;
 

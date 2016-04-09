@@ -75,6 +75,7 @@ private:
 	int p2BeingHit;
 	int buttonKey1 = 0;
 	int buttonKey2 = 0;
+	int cam;
 
 
 public:

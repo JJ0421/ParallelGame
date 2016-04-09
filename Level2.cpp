@@ -48,10 +48,22 @@ void Level2::activateLevel(SDL_Renderer *renderer, SDL_Rect cameraRect) {
 
 void Level2::Draw()
 {
-	camera.x = dude1.GetOriginX() - 320;
+	if (keys[SDL_SCANCODE_SPACE]) {
+		cam = 2;
+	}
 
+	if (keys[SDL_SCANCODE_DELETE]) {
+		cam = 1;
+	}
+
+	if (cam % 2 == 0)
+		camera.x = dude1.GetOriginX() - 620;
+	else {
+		camera.x = dude2.GetOriginX() - 620;
+	}
 	if (camera.x < 0)
 		camera.x = 0;
+
 	roadStructure.Draw(renderTarget, camera);
 	wall1Structure.Draw(renderTarget, camera);
 	wall2Structure.Draw(renderTarget, camera);
