@@ -35,6 +35,7 @@ SDL_Rect lives;
 int p1Health = 3;
 int p2Health = 3;
 int lvl = 1;
+int controlMenu = 0;
 
 Player player1;
 Player player2;
@@ -59,6 +60,7 @@ Structure creditStructure;
 Structure rulesPage;
 Structure creditsPage;
 Structure backStructure;
+Structure controlsStructure;
 
 
 Level1 lv1;
@@ -100,6 +102,7 @@ void LoadGame()
 	p2H1.activateStructure(renderTarget, "oneLife.png", 1000, 0, 150, 40);
 	p2H0.activateStructure(renderTarget, "dead.png", 1000, 0, 150, 40);
 	bgm = Mix_LoadMUS("bgm.wav");
+	controlsStructure.activateStructure(renderTarget, "controls.png", 400, 100, 400, 300);
 
 }
 
@@ -274,6 +277,8 @@ void DrawScreen()
 		lv4.DrawP2();
 		lv4.DrawEnemies();
 	}
+	if (controlMenu == 1)
+		controlsStructure.DrawStill(renderTarget);
 	SDL_RenderPresent(renderTarget);
 
 
@@ -307,6 +312,10 @@ void go()
 		}
 		if (!Mix_PlayingMusic())
 			Mix_PlayMusic(bgm, -1);
+		if (keyState[SDL_SCANCODE_C])
+			controlMenu = 1;
+		if (keyState[SDL_SCANCODE_X])
+			controlMenu = 0;
 
 		DrawScreen();
 		if (keyState[SDL_SCANCODE_ESCAPE])
