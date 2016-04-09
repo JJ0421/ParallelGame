@@ -54,6 +54,12 @@ Structure p2H1;
 Structure p2H0;
 
 Structure startStructure;
+Structure rulesStructure;
+Structure creditStructure;
+Structure rulesPage;
+Structure creditsPage;
+Structure backStructure;
+
 
 Level1 lv1;
 Level2 lv2;
@@ -63,7 +69,7 @@ Mix_Music *bgm;
 Mix_Chunk *hover;
 Mix_Chunk *select;
 
-
+bool active = false;
 bool playing = true;
 //-------------------------------------------------------------------------------------------------------------
 
@@ -177,10 +183,6 @@ void *enemyActions(void *threadid)
 	SDL_Quit();
 	return 0;
 }
-
-
-
-
 
 void Logic()
 {
@@ -312,37 +314,42 @@ void go()
 	}
 }
 
-bool mainMenu()
+
+
+void drawRules()
 {
 	bool play = false;
 	SDL_Event ev;
-	startStructure.activateStructure(renderTarget, "start1.png", 480, 100, 200, 100);
-	hover = Mix_LoadWAV("hover.wav");
-	select = Mix_LoadWAV("select.wav");
 	int hovering = 0;
 	while (play == false)
 	{
 		while (SDL_PollEvent(&ev) != 0) {
-
-			SDL_SetRenderDrawColor(renderTarget, 0, 0, 0, 0);
 			SDL_RenderClear(renderTarget);
-			startStructure.DrawStill(renderTarget);
+			backStructure.DrawStill(renderTarget);
 			SDL_RenderPresent(renderTarget);
 
 			if (ev.type) {
-				SDL_SetTextureColorMod(startStructure.texture, 255, 255, 255);
+				SDL_SetTextureColorMod(backStructure.texture, 255, 255, 255);
 				if (ev.type == SDL_QUIT) {
 					SDL_DestroyWindow(window);
 					SDL_DestroyTexture(texture);
 					SDL_DestroyRenderer(renderTarget);
+					active = 0;
+					play = true;
+				}
 
-					return false;
+
+
+
+				if (ev.button.x >= 0 && ev.button.x <= 150 && ev.button.y >= 500 && ev.button.y <= 545 && ev.type == SDL_MOUSEBUTTONDOWN) {
+					Mix_PlayChannel(1, select, 0);
+					play = true;
 				}
 
 				if (ev.type == SDL_MOUSEMOTION) {
-					if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200) {
-						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
-						if(hovering == 0)
+					if (ev.button.x >= 0 && ev.button.x <= 150 && ev.button.y >= 500 && ev.button.y <= 545) {
+						SDL_SetTextureColorMod(backStructure.texture, 255, 0, 0);
+						if (hovering == 0)
 							Mix_PlayChannel(1, hover, 0);
 						hovering = 1;
 					}
@@ -350,24 +357,167 @@ bool mainMenu()
 						hovering = 0;
 					}
 				}
-				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONUP) {
-					SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
-					play = true;
-				}
+
+
+
+
 			}
-		}
+		}//end while
 
 	}
-	Mix_PlayChannel(1, select, 0);
-	return play;
 }
+
+
+void drawCredits() {
+	bool play = false;
+	SDL_Event ev;
+	int hovering = 0;
+	while (play == false)
+	{
+		while (SDL_PollEvent(&ev) != 0) {
+			SDL_RenderClear(renderTarget);
+			creditsPage.DrawStill(renderTarget);
+			backStructure.DrawStill(renderTarget);
+			SDL_RenderPresent(renderTarget);
+
+			if (ev.type) {
+				SDL_SetTextureColorMod(backStructure.texture, 255, 255, 255);
+				if (ev.type == SDL_QUIT) {
+					SDL_DestroyWindow(window);
+					SDL_DestroyTexture(texture);
+					SDL_DestroyRenderer(renderTarget);
+					active = 0;
+					play = true;
+				}
+
+
+
+
+				if (ev.button.x >= 0 && ev.button.x <= 150 && ev.button.y >= 500 && ev.button.y <= 545 && ev.type == SDL_MOUSEBUTTONDOWN) {
+					Mix_PlayChannel(1, select, 0);
+					play = true;
+				}
+
+				if (ev.type == SDL_MOUSEMOTION) {
+					if (ev.button.x >= 0 && ev.button.x <= 150 && ev.button.y >= 500 && ev.button.y <= 545) {
+						SDL_SetTextureColorMod(backStructure.texture, 255, 0, 0);
+						if (hovering == 0)
+							Mix_PlayChannel(1, hover, 0);
+						hovering = 1;
+					}
+					else {
+						hovering = 0;
+					}
+				}
+
+
+
+
+			}
+		}//end while
+
+	}
+}
+
+
+
+
+int mainMenu()
+{
+	bool play = false;
+	active = 1;
+	SDL_Event ev;
+	startStructure.activateStructure(renderTarget, "start1.png", 480, 100, 200, 100);
+	rulesStructure.activateStructure(renderTarget, "rules.png", 480, 225, 200, 100);
+	creditStructure.activateStructure(renderTarget, "credits.png", 480, 350, 200, 100);
+	creditsPage.activateStructure(renderTarget, "creditsPage.png", 0, 0, 650, 350);
+	backStructure.activateStructure(renderTarget, "back.png", 0, 500, 150, 45);
+	hover = Mix_LoadWAV("hover.wav");
+	select = Mix_LoadWAV("select.wav");
+	int hovering = 0;
+	while (play == false)
+	{
+		while (SDL_PollEvent(&ev) != 0) {
+			SDL_RenderClear(renderTarget);
+			startStructure.DrawStill(renderTarget);
+			rulesStructure.DrawStill(renderTarget);
+			creditStructure.DrawStill(renderTarget);
+			SDL_RenderPresent(renderTarget);
+
+			if (ev.type) {
+				SDL_SetTextureColorMod(startStructure.texture, 255, 255, 255);
+				SDL_SetTextureColorMod(rulesStructure.texture, 255, 255, 255);
+				SDL_SetTextureColorMod(creditStructure.texture, 255, 255, 255);
+				if (ev.type == SDL_QUIT) {
+					SDL_DestroyWindow(window);
+					SDL_DestroyTexture(texture);
+					SDL_DestroyRenderer(renderTarget);
+					return 0;
+				}
+
+
+				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200 && ev.type == SDL_MOUSEBUTTONDOWN) {
+					Mix_PlayChannel(1, select, 0);
+					play = true;
+				}
+
+				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 225 && ev.button.y <= 325 && ev.type == SDL_MOUSEBUTTONDOWN) {
+					Mix_PlayChannel(1, select, 0);
+					drawRules();
+					if (active == 0)
+						play = true;
+				}
+
+				if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 350 && ev.button.y <= 450 && ev.type == SDL_MOUSEBUTTONDOWN){
+					Mix_PlayChannel(1, select, 0);
+					drawCredits();
+					if (active == 0)
+						play = true;
+				}
+
+				if (ev.type == SDL_MOUSEMOTION) {
+					if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 100 && ev.button.y <= 200) {
+						SDL_SetTextureColorMod(startStructure.texture, 255, 0, 0);
+						if (hovering == 0)
+							Mix_PlayChannel(1, hover, 0);
+						hovering = 1;
+					}
+
+					else if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 225 && ev.button.y <= 325) {
+						SDL_SetTextureColorMod(rulesStructure.texture, 255, 0, 0);
+						if (hovering == 0)
+							Mix_PlayChannel(1, hover, 0);
+						hovering = 1;
+					}
+
+					else if (ev.button.x >= 480 && ev.button.x <= 680 && ev.button.y >= 350 && ev.button.y <= 450) {
+						SDL_SetTextureColorMod(creditStructure.texture, 255, 0, 0);
+						if (hovering == 0)
+							Mix_PlayChannel(1, hover, 0);
+						hovering = 1;
+					}
+					else {
+						hovering = 0;
+					}
+				}
+
+
+
+			}
+		}//end while
+
+	}
+	return active;
+}
+
+
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1150, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 	renderTarget = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-	if (mainMenu() == true) {
+	if (mainMenu() == 1) {
 		go();
 	}
 
