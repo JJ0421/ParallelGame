@@ -11,6 +11,7 @@
 #include "Level2.h"
 #include "Level3.h"
 #include "Level4.h"
+#include "Level5.h"
 using namespace std;
 
 #define NUM_THREADS 3
@@ -36,6 +37,7 @@ int p1Health = 3;
 int p2Health = 3;
 int lvl = 1;
 int controlMenu = 0;
+int popSound = 0;
 
 Player player1;
 Player player2;
@@ -61,15 +63,18 @@ Structure rulesPage;
 Structure creditsPage;
 Structure backStructure;
 Structure controlsStructure;
+Structure tbc;
 
 
 Level1 lv1;
 Level2 lv2;
 Level3 lv3;
 Level4 lv4;
+Level5 lv5;
 Mix_Music *bgm;
 Mix_Chunk *hover;
 Mix_Chunk *select;
+
 
 bool active = false;
 bool playing = true;
@@ -103,6 +108,7 @@ void LoadGame()
 	p2H0.activateStructure(renderTarget, "dead.png", 1000, 0, 150, 40);
 	bgm = Mix_LoadMUS("bgm.wav");
 	controlsStructure.activateStructure(renderTarget, "controls.png", 400, 100, 400, 300);
+	tbc.activateStructure(renderTarget, "toBeContinued.png", 300, 125, 500, 500);
 
 }
 
@@ -128,6 +134,8 @@ void *player1Actions(void *threadid)
 			lv3.go(1);
 		if (lvl == 4)
 			lv4.go(1);
+		if (lvl == 5)
+			lv5.go(1);
 
 	}
 
@@ -157,6 +165,8 @@ void *player2Actions(void *threadid)
 			lv3.go(2);
 		if (lvl == 4)
 			lv4.go(2);
+		if (lvl == 5)
+			lv5.go(2);
 	}
 
 	pthread_exit(NULL);
@@ -179,6 +189,8 @@ void *enemyActions(void *threadid)
 			lv3.updateEnemies();
 		if (lvl == 4)
 			lv4.updateEnemies();
+		if (lvl == 5)
+			lv5.updateEnemies();
 
 	}
 
@@ -253,8 +265,11 @@ void DrawScreen()
 
 	SDL_SetRenderDrawColor(renderTarget, 0, 0, 0, 0);
 	SDL_RenderClear(renderTarget);
-	SDL_RenderCopy(renderTarget, texture, &camera, NULL);
-	DrawHealth();
+	if (lvl != 0) {
+		SDL_RenderCopy(renderTarget, texture, &camera, NULL);
+		DrawHealth();
+	}
+
 	if (lvl == 1) {
 		lv1.Draw();
 		lv1.DrawP1();
@@ -277,8 +292,20 @@ void DrawScreen()
 		lv4.DrawP2();
 		lv4.DrawEnemies();
 	}
+	if (lvl == 5) {
+		lv5.Draw();
+		lv5.DrawP1();
+		lv5.DrawP2();
+		lv5.DrawEnemies();
+	}
+
+	if (lvl == 0) {
+		tbc.DrawStill(renderTarget);
+	}
+
 	if (controlMenu == 1)
 		controlsStructure.DrawStill(renderTarget);
+
 	SDL_RenderPresent(renderTarget);
 
 
@@ -298,6 +325,7 @@ void go()
 	lv2.activateLevel(renderTarget, camera);
 	lv3.activateLevel(renderTarget, camera);
 	lv4.activateLevel(renderTarget, camera);
+	lv5.activateLevel(renderTarget, camera);
 	bool running = true;
 	SDL_Event ev;
 
@@ -314,8 +342,10 @@ void go()
 			Mix_PlayMusic(bgm, -1);
 		if (keyState[SDL_SCANCODE_C])
 			controlMenu = 1;
-		if (keyState[SDL_SCANCODE_X])
+
+		if (keyState[SDL_SCANCODE_X]) {
 			controlMenu = 0;
+		}
 
 		DrawScreen();
 		if (keyState[SDL_SCANCODE_ESCAPE])
@@ -335,6 +365,7 @@ void drawRules()
 	{
 		while (SDL_PollEvent(&ev) != 0) {
 			SDL_RenderClear(renderTarget);
+			rulesPage.DrawStill(renderTarget);
 			backStructure.DrawStill(renderTarget);
 			SDL_RenderPresent(renderTarget);
 
@@ -439,8 +470,9 @@ int mainMenu()
 	SDL_Event ev;
 	startStructure.activateStructure(renderTarget, "start1.png", 480, 100, 200, 100);
 	rulesStructure.activateStructure(renderTarget, "rules.png", 480, 225, 200, 100);
+	rulesPage.activateStructure(renderTarget, "rulesPage.png", 0, 0, 900, 500);
 	creditStructure.activateStructure(renderTarget, "credits.png", 480, 350, 200, 100);
-	creditsPage.activateStructure(renderTarget, "creditsPage.png", 0, 0, 650, 350);
+	creditsPage.activateStructure(renderTarget, "creditsPage.png", 0, 0, 750, 450);
 	backStructure.activateStructure(renderTarget, "back.png", 0, 500, 150, 45);
 	hover = Mix_LoadWAV("hover.wav");
 	select = Mix_LoadWAV("select.wav");
@@ -453,7 +485,6 @@ int mainMenu()
 			rulesStructure.DrawStill(renderTarget);
 			creditStructure.DrawStill(renderTarget);
 			SDL_RenderPresent(renderTarget);
-
 			if (ev.type) {
 				SDL_SetTextureColorMod(startStructure.texture, 255, 255, 255);
 				SDL_SetTextureColorMod(rulesStructure.texture, 255, 255, 255);

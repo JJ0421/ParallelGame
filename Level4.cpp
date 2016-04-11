@@ -250,7 +250,7 @@ void Level4::go(int p)
 	if (hasKey) {
 		if (dude1.Passes(door) && dude2.Passes(door)) {
 			Mix_PlayChannel(1, nextLevel, 0);
-			lvl = 3;
+			lvl = 5;
 		}
 	}
 
